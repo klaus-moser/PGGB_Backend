@@ -13,3 +13,4 @@ class IndexForm(FlaskForm):
     login_button = SubmitField('Login')
     register_button = SubmitField('Register')
     overview_button = SubmitField('Have a look!')
+    contact_button = SubmitField('Contact us?')

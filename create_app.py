@@ -8,7 +8,7 @@ from time import ctime
 # from src.resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
 # from src.resources.item import Item, ItemList
 # from src.resources.store import Store, StoreList
-from src.resources.home import Home
+from src.resources.index import Index
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -46,9 +46,9 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     jwt = JWTManager(app=app)
     api = Api(app=app)
 
-    # Configure flask-login
-    #login_manager = LoginManager()
-    #login_manager.init_app(app=app)
+    # TODO: Configure flask-login
+    # login_manager = LoginManager()
+    # login_manager.init_app(app=app)
 
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity: int) -> dict:
@@ -124,7 +124,7 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
         return render_template('error-500.html'), 500
 
     # Endpoints
-    api.add_resource(Home, '/')
+    api.add_resource(Index, '/')
     # api.add_resource(UserLogin, '/login')
     # api.add_resource(UserLogout, '/logout')
     # api.add_resource(UserRegister, '/register')
