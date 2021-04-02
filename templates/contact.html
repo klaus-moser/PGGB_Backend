@@ -1,0 +1,20 @@
+{% extends "template-layout.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block title %} Contact {% endblock %}
+
+{% block content %}
+    <h1> Contact us! </h1>
+    <form>
+
+        <div>
+            {{ displayField(form.email_field, 'Email', autofocus=true) }}
+            {{ displayField(form.text_field, 'Message') }}
+        </div>
+        <div>
+            {{ form.send_button }}
+        </div>
+
+    </form>
+{% endblock %}
