@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from time import ctime
 
-from src.resources.user import UserRegister#, User, UserLogin, TokenRefresh, UserLogout
+from src.resources.user import UserRegister, User  #, UserLogin, TokenRefresh, UserLogout
 # from src.resources.item import Item, ItemList
 # from src.resources.store import Store, StoreList
 from src.resources.index import Index
@@ -139,6 +139,7 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     # api.add_resource(UserLogout, '/logout')
     api.add_resource(UserRegister, '/register')
     api.add_resource(Contact, '/contact')
+    api.add_resource(User, '/user/<int:user_id>')
 
     # api.add_resource(Item, '/item/<string:name>')
     # api.add_resource(ItemList, '/items')
