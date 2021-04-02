@@ -1,3 +1,4 @@
+from flask import render_template, make_response
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (create_access_token,
@@ -8,6 +9,7 @@ from flask_jwt_extended import (create_access_token,
 
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
+from src.wtform_fields import RegisterForm
 
 
 class UserRegister(Resource):
@@ -34,6 +36,25 @@ class UserRegister(Resource):
         help="This field cannot be blank!"
     )
 
+    parser.add_argument(
+        'confirm_pwd',
+        type=str,
+        required=True,
+        help="This field cannot be blank!"
+    )
+
+    @staticmethod
+    def get():
+        """
+        Render the 'register.html'.
+
+        :return: 'register'
+        """
+        register_form = RegisterForm()
+
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('register.html', form=register_form), 200, headers)
+
     @classmethod
     def post(cls) -> tuple:
         """
@@ -45,6 +66,9 @@ class UserRegister(Resource):
 
         if UserModel.find_by_username(data['username']):
             return {"message": "A user '{}' already exists!".format(data['username'])}, 400
+
+        elif data['password'] != data['confirm_pwd']:
+            return {"message": "Passwords do not match!"}, 401  # TODO: better solution
 
         # Hashing: incl. 16-byte salt (auto) + 29.000 iterations (default)
         data['password'] = pbkdf2_sha256.hash(data['password'])
@@ -58,7 +82,7 @@ class UserRegister(Resource):
 class User(Resource):
 
     @classmethod
-    @jwt_required()
+    # TODO: @jwt_required()
     def get(cls, user_id) -> tuple:
         """
         Get the user by an id.
@@ -73,7 +97,7 @@ class User(Resource):
         return user.json(), 200
 
     @classmethod
-    @jwt_required(fresh=True)
+    # TODO: @jwt_required(fresh=True)
     def delete(cls, user_id) -> tuple:
         """
         Delete a user from the db.

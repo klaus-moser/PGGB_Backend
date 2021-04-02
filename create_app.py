@@ -5,10 +5,11 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from time import ctime
 
-# from src.resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
+from src.resources.user import UserRegister#, User, UserLogin, TokenRefresh, UserLogout
 # from src.resources.item import Item, ItemList
 # from src.resources.store import Store, StoreList
 from src.resources.index import Index
+from src.resources.contact import Contact
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -49,6 +50,15 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     # TODO: Configure flask-login
     # login_manager = LoginManager()
     # login_manager.init_app(app=app)
+    #
+    # @login_manager.user_loader
+    # def load_user(user_id: str) -> object:
+    #     """
+    #     Load a user when he logs in an give it to the login_manager.
+    #     :param user_id: Userid.
+    #     :return: User object.
+    #     """
+    #     return UserModel.find_by_id(id_=user_id)
 
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity: int) -> dict:
@@ -127,7 +137,9 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     api.add_resource(Index, '/')
     # api.add_resource(UserLogin, '/login')
     # api.add_resource(UserLogout, '/logout')
-    # api.add_resource(UserRegister, '/register')
+    api.add_resource(UserRegister, '/register')
+    api.add_resource(Contact, '/contact')
+
     # api.add_resource(Item, '/item/<string:name>')
     # api.add_resource(ItemList, '/items')
     # api.add_resource(Store, '/store/<string:name>')

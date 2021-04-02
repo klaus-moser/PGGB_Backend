@@ -9,7 +9,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(80))
     password = db.Column(db.String(80))
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, confirm_pwd=None):  # TODO: Better solution
         self.username = username
         self.email = email
         self.password = password
@@ -20,7 +20,7 @@ class UserModel(db.Model):
 
         :return: {'id': Int, 'username': String}
         """
-        return {'id': self.id, 'username': self.username}
+        return {'id': self.id, 'username': self.username, 'email': self.email}
 
     @classmethod
     def find_by_username(cls, username: str) -> object:

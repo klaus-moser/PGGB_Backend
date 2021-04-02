@@ -20,8 +20,6 @@ class ContactForm(FlaskForm):
     """
     This is the form class for the '/contact' endpoint.
     """
-    # TODO: check existing email (registered user)
-    # TODO: check email format (Regex)
     email_field = StringField('email_field', validators=[
         InputRequired(message='Email required!'),
         Length(min=4, max=25, message='Put in a valid E-Mail address!')])
@@ -31,6 +29,10 @@ class ContactForm(FlaskForm):
         Length(min=1, max=200, message='Message cannot be empty!')])
 
     send_button = SubmitField('Send')
+
+    # TODO: check email format (Regex)
+    def check_email_format(self):
+        ...
 
 
 class RegisterForm(FlaskForm):
@@ -54,14 +56,15 @@ class RegisterForm(FlaskForm):
         EqualTo('password', message='Passwords must match!')])
 
     submit_button = SubmitField('Register')
-
-    # Custom validator to check username upfront
-    def validate_username(self, username) -> None:
-        """
-        Validate a given username.
-
-        :param username: Username to be validated via the database.
-        :return: None.
-        """
-        if UserModel.find_by_username(username=username.data):
-            raise ValidationError("A user '{}' already exists!".format(username.data))
+    # TODO: check username
+    # # Custom validator to check username upfront
+    # def validate_username(self, username) -> None:
+    #     """
+    #     Validate a given username.
+    #
+    #     :param username: Username to be validated via the database.
+    #     :return: None.
+    #     """
+    #     if UserModel.find_by_username(username=username.data):
+    #         raise ValidationError("A user '{}' already exists!".format(username.data))
+    #

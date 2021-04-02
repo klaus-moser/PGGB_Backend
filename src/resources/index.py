@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import render_template, make_response, redirect, url_for
 
-from src.wtform_fields import IndexForm, ContactForm
+from src.wtform_fields import IndexForm, ContactForm, RegisterForm
 
 
 class Index(Resource):
@@ -29,8 +29,6 @@ class Index(Resource):
         # Import WTForms
         index = IndexForm()
         # login_form = LoginForm()  # TODO
-        # register_form = RegisterForm()  # TODO
-        contact_form = ContactForm()  # TODO
         # gallery_form = GalleryForm()  # TODO
 
         if index.validate_on_submit():
@@ -41,12 +39,11 @@ class Index(Resource):
 
             # Register
             elif index.register_button.data:
-                pass
-                # return make_response(render_template('register.html', form=contact_form), 200, self.headers)
+                return redirect('/register')
 
             # Contact
             elif index.contact_button.data:
-                return make_response(render_template('contact.html', form=contact_form), 200, self.headers)
+                return redirect('/contact')
 
             # View
             elif index.overview_button.data:
