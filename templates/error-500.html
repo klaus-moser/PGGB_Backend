@@ -1,0 +1,28 @@
+{%  extends "error-basic.html" %}
+
+{% block title %}500{% endblock %}
+
+{% block head %}
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Chango" rel="stylesheet">
+
+	<!-- Custom stylesheet -->
+	<link type="text/css" rel="stylesheet" href="../static/style/error-basic.css" />
+
+{% endblock %}
+
+{% block body %}
+	<div id="internal">
+		<div class="internal">
+			<div>
+				<div class="internal-500">
+					<h1>!</h1>
+				</div>
+				<h2>Error<br>500</h2>
+			</div>
+			<p>There is an internal server error. Please try again later.</p>
+		</div>
+	</div>
+{% endblock %}
