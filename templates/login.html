@@ -15,11 +15,19 @@
 
         <div>
             {{ form.login_button }}
-            {{ form.register_button }}
-            {{ form.reset_button }}
         </div>
 
-        {{ form.csrf_token }}
+        <div>
+             <a href="{{url_for('userregister')}}" class="w-40 btn btn-primary">Sign Up</a>
+        </div>
+
+        <div>
+        <!--     # TODO: (reset_password) -->
+        </div>
+
+        <div>
+             <a href="{{url_for('contact')}}" class="w-40 btn btn-primary">Contact Us</a>
+        </div>
 
     </form>
 {% endblock %}

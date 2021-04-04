@@ -2,16 +2,16 @@ from flask_restful import Resource
 from flask import render_template, make_response, redirect, url_for
 from flask_login import current_user
 
+from src.wtform_fields import UserContactForm, AnonymContactForm
+
 
 class Index(Resource):
     """
-    Index Resource.
+    Index Resource. Render the 'index.html' landing page.
     """
     @staticmethod
     def get():
-        """
-        Render the 'index.html' landing page.
-        """
+        """ GET """
         if current_user.is_authenticated:
             return redirect(url_for('gallery'))
         return make_response(render_template('main/index.html', title="Index"), 200)
@@ -19,39 +19,40 @@ class Index(Resource):
 
 class Gallery(Resource):
     """
-    Gallery Resource.
+    Gallery Resource. Render the 'gallery.html' page depending on logged in status.
     """
     @staticmethod
     def get():
-        """
-        Render the 'gallery.html' page.
-        """
+        """ GET """
+        # TODO: view a random gallery of drinks
         return make_response(render_template('main/gallery.html', title="Gallery"), 200)
 
 
 class Contact(Resource):
     """
-    Contact Resource.
+    Contact Resource. Depending on method=["POST", "GET"]
+    send mail or just render the 'contact.html'.
     """
-    def __init__(self):
-        self.headers = {'Content-Type': 'text/html'}
+    @staticmethod
+    def post():
+        """ POST """
+        if current_user.is_authenticated:
+            contact_form = UserContactForm()
+        else:
+            contact_form = AnonymContactForm()
 
-    def get(self):
-        """
-        Render the 'contact.html'.
+        if contact_form.validate_on_submit():
+            # TODO: send_mail
+            # TODO: flash message
+            redirect(url_for('gallery'))
 
-        :return: 'contact.html'
-        """
-        contact_form = ContactForm()
-        return make_response(render_template('main/contact.html', form=contact_form), 200, self.headers)
+    @staticmethod
+    def get():
+        """ GET """
+        contact_form = AnonymContactForm()
 
-    def post(self):
-        """
-        Takes the post request to send the E-mail.
-        Pop-Up to inform the user.
+        if current_user.is_authenticated:
+            contact_form.username.data = current_user.username
+            contact_form.email.data = current_user.email
 
-        :return: '/'
-        """
-        # TODO: send email
-        # TODO: Info-pop up
-        return redirect('/')
+        return make_response(render_template('main/contact.html', form=contact_form, title="Contact Us"), 200)

@@ -10,7 +10,7 @@
     <form action="{{ url_for('contact') }}" method="POST">
 
         <div>
-            {{ displayField(form.email_field, 'Email', autofocus=true) }}
+            {{ displayField(form.contact_field, 'Email', autofocus=true) }}
             {{ displayField(form.text_field, 'Message') }}
         </div>
 
