@@ -18,7 +18,7 @@ class Contact(Resource):
         :return: 'contact.html'
         """
         contact_form = ContactForm()
-        return make_response(render_template('contact.html', form=contact_form), 200, self.headers)
+        return make_response(render_template('main/contact.html', form=contact_form), 200, self.headers)
 
     def post(self):
         """

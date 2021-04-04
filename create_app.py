@@ -2,12 +2,11 @@ from flask import Flask, render_template, jsonify
 from flask_login import LoginManager
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
-from time import ctime
 
 from src.models.user import UserModel
 
 from src.resources.user import UserRegister, User, UserLogin
-from src.resources.index import Index
+from src.resources.main import Index, Gallery
 from src.resources.contact import Contact
 
 from src.blacklist import BLACKLIST
@@ -118,14 +117,17 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
 
     @app.errorhandler(404)
     def page_not_found(error) -> tuple:
-        return render_template('error-404.html'), 404
+        return render_template('error/error-404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(error) -> tuple:
-        return render_template('error-500.html'), 500
+        return render_template('error/error-500.html'), 500
 
     # Endpoints
     api.add_resource(Index, '/')
+    api.add_resource(Gallery, '/gallery')
+
+    # TODO
     api.add_resource(UserLogin, '/login')
     api.add_resource(UserRegister, '/register')
     api.add_resource(Contact, '/contact')

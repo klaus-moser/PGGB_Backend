@@ -8,13 +8,9 @@
     <form action="{{ url_for('index') }}" method="POST">
 
         <div>
-            {{ form.login_button }}
-            {{ form.register_button }}
-            {{ form.overview_button }}
-            {{ form.contact_button }}
+            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('userlogin')}}">Login</a>
+            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('userregister')}}">Sign up</a>
         </div>
-
-        {{ form.csrf_token }}
 
     </form>
 {% endblock %}

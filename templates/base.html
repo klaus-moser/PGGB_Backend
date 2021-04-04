@@ -10,6 +10,23 @@
         {% endif %}
     </head>
     <body>
+        <!-- Top Navigation Bar -->
+        {% if current_user.is_authenticated %}
+              <div class="hidden md:flex">
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('userlogout')}}">Logout</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('contact')}}">Contact Us</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('upload')}}">Upload</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('gallery')}}">Gallery</a>
+              </div>
+        {% endif %}
+        <!-- Login & Sign Up buttons vs My Account depending on whether user is signed in -->
+        {% if current_user.is_anonymous %}
+            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('users.login')}}">Login</a>
+            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('users.register')}}">Sign up</a>
+        {% else %}
+            <a class="w-28 btn btn-primary " href="{{url_for('users.profile', username=current_user.username)}}">My Profile</a>
+        {% endif %}
+
         <!-- MAIN CONTENT -->
         {% block content %}
 
