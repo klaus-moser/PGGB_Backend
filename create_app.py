@@ -5,8 +5,9 @@ from flask_restful import Api
 
 from src.models.user import UserModel
 
-from src.resources.user import UserRegister, User, UserLogin
+from src.resources.user import UserRegister, User, UserLogin, UserLogout, UserResetPassword
 from src.resources.main import Index, Gallery, Contact
+from src.resources.drink import DrinkUpload
 
 from src.blacklist import BLACKLIST
 from src.config import modes
@@ -126,8 +127,10 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     api.add_resource(Index, '/')
     api.add_resource(Gallery, '/gallery')
     api.add_resource(Contact, '/contact')
-
+    api.add_resource(UserResetPassword, '/reset_password')
     api.add_resource(UserLogin, '/login')
+    api.add_resource(UserLogout, '/logout')
+    api.add_resource(DrinkUpload, '/upload')
     # TODO
 
     api.add_resource(UserRegister, '/register')
