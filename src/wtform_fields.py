@@ -6,11 +6,11 @@ from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 from src.models.user import UserModel
 
 
-class ContactFormBasic(FlaskForm):
+class AnonymContactForm(FlaskForm):
     """
     This is the base form class for the '/contact' endpoint.
     """
-    contact_field = StringField('contact_field', validators=[
+    email_field = StringField('email_field', validators=[
         InputRequired(message='Email'),
         Length(min=4, max=25, message='Put in a valid E-Mail address!')])
 
@@ -25,19 +25,12 @@ class ContactFormBasic(FlaskForm):
         ...
 
 
-class UserContactForm(ContactFormBasic):
+class UserContactForm(AnonymContactForm):
     """
     Contact form for logged in users.
     """
-    contact_field = StringField('contact_field', validators=[
+    username_field = StringField('username_field', validators=[
         InputRequired()])
-
-
-class AnonymContactForm(ContactFormBasic):
-    """
-    Contact form for unknown users.
-    """
-    pass
 
 
 class RegisterForm(FlaskForm):

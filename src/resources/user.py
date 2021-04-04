@@ -1,5 +1,5 @@
-from flask import render_template, make_response
-from flask_login import login_user
+from flask import render_template, make_response, redirect, url_for
+from flask_login import login_user, logout_user
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (create_access_token,
@@ -172,16 +172,14 @@ class UserLogin(Resource):
 class UserLogout(Resource):
 
     @jwt_required()
-    def post(self) -> tuple:
+    def get(self):
         """
         Put jti on the BLACKLIST to deny further access to endpoints.
-
-        :return: {'message': 'Successfully logged out!'}, 200
         """
         jti = get_jwt()['jti']  # jti = "JWT ID", a unique identifier for a JWT.
-
+        logout_user()
         BLACKLIST.add(jti)
-        return {'message': 'Successfully logged out!'}, 200
+        return redirect(url_for('index'))
 
 
 class TokenRefresh(Resource):

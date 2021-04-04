@@ -49,10 +49,13 @@ class Contact(Resource):
     @staticmethod
     def get():
         """ GET """
-        contact_form = AnonymContactForm()
+        if current_user.is_authenticated:
+            contact_form = UserContactForm()
+        else:
+            contact_form = AnonymContactForm()
 
         if current_user.is_authenticated:
-            contact_form.username.data = current_user.username
-            contact_form.email.data = current_user.email
+            contact_form.username_field.data = current_user.username
+            contact_form.email_field.data = current_user.email
 
         return make_response(render_template('main/contact.html', form=contact_form, title="Contact Us"), 200)

@@ -10,8 +10,14 @@
     <form action="{{ url_for('contact') }}" method="POST">
 
         <div>
-            {{ displayField(form.contact_field, 'Email', autofocus=true) }}
+            {% if current_user.is_authenticated %}
+            {{ displayField(form.username_field, 'Username') }}
+            {{ displayField(form.email_field, 'Email') }}
+            {{ displayField(form.text_field, 'Message', autofocus=true) }}
+            {% else %}
+            {{ displayField(form.email_field, 'Email', autofocus=true) }}
             {{ displayField(form.text_field, 'Message') }}
+            {% endif %}
         </div>
 
         <div>
