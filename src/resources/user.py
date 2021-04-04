@@ -1,11 +1,13 @@
-from flask import render_template, make_response, redirect
+from flask import render_template, make_response
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
                                 jwt_required,
                                 get_jwt_identity,
-                                get_jwt)
+                                get_jwt,
+                                set_refresh_cookies,
+                                set_access_cookies)
 
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
@@ -153,21 +155,19 @@ class UserLogin(Resource):
         user = UserModel.find_by_username(data['username'])
 
         if user and pbkdf2_sha256.verify(data['password'], user.password):
+
             # create access token + save user.id in that token
             access_token = create_access_token(identity=user.id, fresh=True)
             # create refresh token
             refresh_token = create_refresh_token(identity=user.id)
 
-            headers = {'Authorization': 'Bearer ' + access_token}
-            response = make_response(render_template('gallery.html'), 200, headers)
+            response = make_response(render_template('gallery.html'), 200)
 
-            response.set_cookie('access_token', access_token)
-            response.set_cookie('refresh_token', refresh_token)
-
+            set_access_cookies(response, access_token)
+            set_refresh_cookies(response, refresh_token)
             return response
 
         return {'message': 'Invalid credentials!'}, 401
-
 
 
 class UserLogout(Resource):

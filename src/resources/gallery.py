@@ -1,5 +1,6 @@
 from flask import render_template, make_response, redirect
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 
 from src.wtform_fields import ContactForm
 
@@ -11,6 +12,7 @@ class Gallery(Resource):
     def __init__(self):
         self.headers = {'Content-Type': 'text/html'}
 
+    @jwt_required()
     def get(self):
         """
         Render the 'contact.html'.
