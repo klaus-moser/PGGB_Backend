@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import render_template, make_response, redirect, url_for
+from flask import render_template, make_response, redirect, url_for, flash
 from flask_login import current_user
 
 from src.wtform_fields import UserContactForm, AnonymContactForm
@@ -43,7 +43,7 @@ class Contact(Resource):
 
         if contact_form.validate_on_submit():
             # TODO: send_mail
-            # TODO: flash message
+            flash("Your message has been sent!", "success")
             redirect(url_for('gallery'))
 
     @staticmethod

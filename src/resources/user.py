@@ -1,4 +1,4 @@
-from flask import render_template, make_response, redirect, url_for
+from flask import render_template, make_response, redirect, url_for, flash
 from flask_login import login_user, logout_user
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
@@ -13,6 +13,24 @@ from flask_jwt_extended import (create_access_token,
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
 from src.wtform_fields import RegisterForm, LoginForm
+
+
+class User(Resource):
+
+    @classmethod
+    # TODO: @jwt_required()
+    def get(cls, user_id) -> tuple:
+        """
+        Get the user by an id.
+
+        :param user_id: Integer of userid.
+        :return: User or .json message
+        """
+        user = UserModel.find_by_id(id_=user_id)
+
+        if not user:
+            return {'message': 'User not found!'}, 404
+        return user.json(), 200
 
 
 class UserRegister(Resource):
@@ -67,9 +85,11 @@ class UserRegister(Resource):
         """
         data = cls.parser.parse_args()
 
+        # TODO: login manager?
         if UserModel.find_by_username(data['username']):
             return {"message": "A user '{}' already exists!".format(data['username'])}, 400
 
+        # TODO: login manager?
         elif data['password'] != data['confirm_pwd']:
             return {"message": "Passwords do not match!"}, 401
 
@@ -78,42 +98,8 @@ class UserRegister(Resource):
         user = UserModel(**data)
         user.save_to_db()
 
+        # TODO: message?
         return {"message": "User created successfully."}, 201
-
-
-class User(Resource):
-
-    @classmethod
-    # TODO: @jwt_required()
-    def get(cls, user_id) -> tuple:
-        """
-        Get the user by an id.
-
-        :param user_id: Integer of userid.
-        :return: User or .json message
-        """
-        user = UserModel.find_by_id(id_=user_id)
-
-        if not user:
-            return {'message': 'User not found!'}, 404
-        return user.json(), 200
-
-    @classmethod
-    # TODO: @jwt_required(fresh=True)
-    def delete(cls, user_id) -> tuple:
-        """
-        Delete a user from the db.
-        Requires a fresh JWT.
-
-        :param user_id: Int of user id.
-        :return: .json message + status code.
-        """
-        user = UserModel.find_by_id(id_=user_id)
-
-        if not user:
-            return {'message': 'User not found!'}, 404
-        user.delete_from_db()
-        return {'message': 'User deleted.'}, 200
 
 
 class UserLogin(Resource):
@@ -156,6 +142,7 @@ class UserLogin(Resource):
         if user and pbkdf2_sha256.verify(data['password'], user.password):
             # Login
             login_user(user=user)
+            flash(f"Welcome back, {user.username}!", "success")
 
             # create access & refresh token + save user.id in that token
             access_token = create_access_token(identity=user.id, fresh=True)
@@ -176,9 +163,11 @@ class UserLogout(Resource):
         """
         Put jti on the BLACKLIST to deny further access to endpoints.
         """
-        jti = get_jwt()['jti']  # jti = "JWT ID", a unique identifier for a JWT.
-        logout_user()
+        jti = get_jwt()['jti']
         BLACKLIST.add(jti)
+
+        logout_user()
+        flash("Logged out!", "success")
         return redirect(url_for('index'))
 
 
@@ -194,7 +183,7 @@ class TokenRefresh(Resource):
         current_user = get_jwt_identity()
 
         new_token = create_access_token(identity=current_user, fresh=False)
-        return {'access_token': new_token}, 200
+        return {'access_token': new_token}, 200  # TODO: implement make_response
 
 
 class UserResetPassword(Resource):
@@ -202,3 +191,23 @@ class UserResetPassword(Resource):
     # TODO
     def get(self):
         return make_response(render_template('error/error-404.html'))
+
+
+class UserDelete(Resource):
+
+    @classmethod
+    # TODO: @jwt_required(fresh=True)
+    def delete(cls, user_id) -> tuple:
+        """
+        Delete a user from the db.
+        Requires a fresh JWT.
+
+        :param user_id: Int of user id.
+        :return: .json message + status code.
+        """
+        user = UserModel.find_by_id(id_=user_id)
+
+        if not user:
+            return {'message': 'User not found!'}, 404
+        user.delete_from_db()
+        return {'message': 'User deleted.'}, 200

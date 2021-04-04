@@ -34,12 +34,10 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of .db, JWT & API
+    # Initialization of .db, JWT,API & loginManager
     db.init_app(app=app)
     jwt = JWTManager(app=app)
     api = Api(app=app)
-
-    # TODO: Configure flask-login
     login_manager = LoginManager()
     login_manager.init_app(app=app)
 
@@ -127,13 +125,13 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     api.add_resource(Index, '/')
     api.add_resource(Gallery, '/gallery')
     api.add_resource(Contact, '/contact')
-    api.add_resource(UserResetPassword, '/reset_password')
+
+    api.add_resource(User, '/user/<int:user_id>')
     api.add_resource(UserLogin, '/login')
     api.add_resource(UserLogout, '/logout')
-    api.add_resource(DrinkUpload, '/upload')
-    # TODO
-
     api.add_resource(UserRegister, '/register')
-    api.add_resource(User, '/user/<int:user_id>')
+    api.add_resource(UserResetPassword, '/reset_password')
+
+    api.add_resource(DrinkUpload, '/upload')
 
     return app
