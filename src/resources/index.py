@@ -32,8 +32,7 @@ class Index(Resource):
         if index.validate_on_submit():
 
             if index.login_button.data:
-                pass
-                # return redirect('login.html')  # TODO
+                return redirect('/login')
 
             elif index.register_button.data:
                 return redirect('/register')
@@ -42,7 +41,6 @@ class Index(Resource):
                 return redirect('/contact')
 
             elif index.overview_button.data:
-                pass
-                # return redirect('gallery.html')  # TODO
+                return redirect('/gallery')
 
         return redirect(url_for('index'))  # TODO: necessary?

@@ -1,4 +1,4 @@
-from flask import render_template, make_response
+from flask import render_template, make_response, redirect
 from flask_restful import Resource, reqparse
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (create_access_token,
@@ -9,7 +9,7 @@ from flask_jwt_extended import (create_access_token,
 
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
-from src.wtform_fields import RegisterForm
+from src.wtform_fields import RegisterForm, LoginForm
 
 
 class UserRegister(Resource):
@@ -17,6 +17,7 @@ class UserRegister(Resource):
     Class to register a new user.
     """
     parser = reqparse.RequestParser()
+
     parser.add_argument(
         'username',
         type=str,
@@ -35,7 +36,6 @@ class UserRegister(Resource):
         required=True,
         help="This field cannot be blank!"
     )
-
     parser.add_argument(
         'confirm_pwd',
         type=str,
@@ -68,13 +68,12 @@ class UserRegister(Resource):
             return {"message": "A user '{}' already exists!".format(data['username'])}, 400
 
         elif data['password'] != data['confirm_pwd']:
-            return {"message": "Passwords do not match!"}, 401  # TODO: better solution
+            return {"message": "Passwords do not match!"}, 401
 
-        # Hashing: incl. 16-byte salt (auto) + 29.000 iterations (default)
         data['password'] = pbkdf2_sha256.hash(data['password'])
 
-        user = UserModel(**data)  # UserModel(data['username'], data['password'])
-        user.save_to_db()  # Because we use a parser we can use **data! Its never gonna have more/less arguments
+        user = UserModel(**data)
+        user.save_to_db()
 
         return {"message": "User created successfully."}, 201
 
@@ -129,6 +128,18 @@ class UserLogin(Resource):
         help="This field cannot be blank!"
     )
 
+    @staticmethod
+    def get():
+        """
+        Render the login.html page.
+
+        :return: login.html
+        """
+        login_form = LoginForm()
+
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('login.html', form=login_form), 200, headers)
+
     @classmethod
     def post(cls) -> tuple:
         """
@@ -147,12 +158,16 @@ class UserLogin(Resource):
             # create refresh token
             refresh_token = create_refresh_token(identity=user.id)
 
-            return {
-                       'access_token': access_token,
-                       'refresh_token': refresh_token
-                   }, 200
+            headers = {'Authorization': 'Bearer ' + access_token}
+            response = make_response(render_template('gallery.html'), 200, headers)
+
+            response.set_cookie('access_token', access_token)
+            response.set_cookie('refresh_token', refresh_token)
+
+            return response
 
         return {'message': 'Invalid credentials!'}, 401
+
 
 
 class UserLogout(Resource):

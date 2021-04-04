@@ -4,7 +4,7 @@ from flask_restful import Resource
 from src.wtform_fields import ContactForm
 
 
-class Contact(Resource):
+class Gallery(Resource):
     """
     Contact Resource.
     """
@@ -18,15 +18,9 @@ class Contact(Resource):
         :return: 'contact.html'
         """
         contact_form = ContactForm()
-        return make_response(render_template('contact.html', form=contact_form), 200, self.headers)
+        return make_response(render_template('gallery.html', form=contact_form), 200, self.headers)
 
     def post(self):
-        """
-        Takes the post request to send the E-mail.
-        Pop-Up to inform the user.
 
-        :return: '/'
-        """
-        # TODO: send email
-        # TODO: Info-pop up
+        # TODO:
         return redirect('/')
