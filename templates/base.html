@@ -2,12 +2,18 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="description" content="A fun web app to rate your own or friends drinks!">
+        <meta name="keywords" content="Python, Flask, Photo, Sharing, Drinks, 42">
+        <meta name="author" content="Klaus Moser">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
         <!-- Title -->
         {% if title %}
         <title>{{ title }} - PGGB</title>
         {% else %}
         <title>PAN-GALACTIC-GARGLE-BLASTER</title>
         {% endif %}
+
     </head>
     <body>
         <!-- Top Navigation Bar -->
@@ -19,17 +25,23 @@
                 <a class="block mr-4 hover:text-primary-600" href="{{url_for('gallery')}}">Gallery</a>
               </div>
         {% endif %}
+
         <!-- Login & Sign Up buttons vs My Account depending on whether user is signed in -->
         {% if current_user.is_anonymous %}
-            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('users.login')}}">Login</a>
-            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('users.register')}}">Sign up</a>
+            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('userlogin')}}">Login</a>
+            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('userregister')}}">Sign up</a>
         {% else %}
-            <a class="w-28 btn btn-primary " href="{{url_for('users.profile', username=current_user.username)}}">My Profile</a>
+            <a class="w-28 btn btn-primary " href="{{url_for('profile', username=current_user.username)}}">My Profile</a>
         {% endif %}
 
-        <!-- MAIN CONTENT -->
+        <!-- Main block -->
         {% block content %}
 
         {% endblock %}
+
+        <!-- Footer with static content -->
+        <footer>
+
+        </footer>
     </body>
 </html>
