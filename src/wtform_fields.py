@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
+from passlib.handlers.pbkdf2 import pbkdf2_sha256
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
-from wtforms.validators import InputRequired, Length, EqualTo
+from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
+
+from src.models.user import UserModel
 
 
 class IndexForm(FlaskForm):
@@ -54,16 +57,40 @@ class RegisterForm(FlaskForm):
 
     submit_button = SubmitField('Register')
 
+    # Custom validator to check username upfront
+    def validate_username(self, username) -> None:
+        """
+        Validate a given username.
+        :param username: Username to be validated via the database.
+        """
+        if UserModel.find_by_username(username=username.data):
+            raise ValidationError("A user '{}' already exists!".format(username.data))
+
 
 class LoginForm(FlaskForm):
     """
     This is the form class for the '/login' endpoint.
     """
+    def validate_credentials(self, field: PasswordField) -> None:
+        """
+        Check the credentials from the LoginForm.
+        """
+        username_entered = self.username.data
+        password_entered = field.data
+
+        user = UserModel.find_by_username(username=username_entered)
+
+        # Check if credentials are valid
+        if user is None:
+            raise ValidationError("Username or password is incorrect!")
+        elif not pbkdf2_sha256.verify(password_entered, user.password):
+            raise ValidationError("Username or password is incorrect!")
+
     username = StringField('username_label', validators=[
         InputRequired(message='Username required!')])
 
     password = PasswordField('password_label', validators=[
-        InputRequired(message='Password required!')])
+        InputRequired(message='Password required!'), validate_credentials])
 
     login_button = SubmitField('Login')
 

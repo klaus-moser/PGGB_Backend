@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import render_template, make_response, redirect, url_for
+from flask_login import current_user
 
 from src.wtform_fields import IndexForm
 
@@ -11,14 +12,14 @@ class Index(Resource):
     @staticmethod
     def get():
         """
-        Render the index.html page.
-
-        :return: index.html
+        Render the index.html landing page.
         """
-        index_form = IndexForm()
+        if current_user.is_authenticated:
+            return "Hello World"
+            # return redirect(url_for('gallery'))
 
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('index.html', form=index_form), 200, headers)
+        index_form = IndexForm()
+        return make_response(render_template('index.html', form=index_form), 200)
 
     @staticmethod
     def post():

@@ -3,10 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <!-- Title -->
-        <title>{% block title %}{% endblock %}</title>
+        {% if title %}
+        <title>{{ title }} - PGGB</title>
+        {% else %}
+        <title>PAN-GALACTIC-GARGLE-BLASTER</title>
+        {% endif %}
     </head>
     <body>
-        <!-- Content of the webpages -->
+        <!-- MAIN CONTENT -->
         {% block content %}
 
         {% endblock %}

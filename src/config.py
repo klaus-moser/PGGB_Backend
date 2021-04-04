@@ -42,11 +42,6 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
 
-    LOG_LEVEL = 'INFO'
-    LOG_FILE = join(dirname(__file__), 'logs/flask_app.log')
-    LOG_FILEMODE = 'w'
-    LOGGER_NAME = 'flask_app'
-
 
 class ProductionConfig(Config):
     """

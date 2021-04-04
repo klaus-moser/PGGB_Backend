@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify
 from flask_login import LoginManager
-from logging import getLogger, basicConfig
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from time import ctime
@@ -10,7 +9,7 @@ from src.models.user import UserModel
 from src.resources.user import UserRegister, User, UserLogin
 from src.resources.index import Index
 from src.resources.contact import Contact
-from src.resources.gallery import Gallery
+
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -36,14 +35,7 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of logger
-    log = getLogger(app.config['LOGGER_NAME'])
-    basicConfig(filename=app.config['LOG_FILE'],
-                filemode=app.config['LOG_FILEMODE'],
-                level=app.config['LOG_LEVEL'])
-
     # Initialization of .db, JWT & API
-    log.debug("*** INIT START *** {}".format(ctime()))
     db.init_app(app=app)
     jwt = JWTManager(app=app)
     api = Api(app=app)
@@ -126,28 +118,17 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
 
     @app.errorhandler(404)
     def page_not_found(error) -> tuple:
-        log.warning("page_not_found: {}".format(ctime()))
         return render_template('error-404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(error) -> tuple:
-        log.error("internal_server_error: {}".format(ctime()))
         return render_template('error-500.html'), 500
 
     # Endpoints
     api.add_resource(Index, '/')
     api.add_resource(UserLogin, '/login')
-    # api.add_resource(UserLogout, '/logout')
     api.add_resource(UserRegister, '/register')
     api.add_resource(Contact, '/contact')
     api.add_resource(User, '/user/<int:user_id>')
-    api.add_resource(Gallery, '/gallery')
 
-    # api.add_resource(Item, '/item/<string:name>')
-    # api.add_resource(ItemList, '/items')
-    # api.add_resource(Store, '/store/<string:name>')
-    # api.add_resource(StoreList, '/stores')
-    # api.add_resource(TokenRefresh, '/refresh')
-
-    log.debug("*** INIT COMPLETED *** {}".format(ctime()))
     return app
