@@ -7,7 +7,7 @@
 {% block content %}
     <h1> Contact us! </h1>
 
-    <form action="{{ url_for('contact') }}" method="POST">
+    <form action="{{ url_for('main.contact') }}" method="POST">
 
         <div>
             {% if current_user.is_authenticated %}
@@ -23,6 +23,6 @@
         <div>
             {{ form.send_button }}
         </div>
-
+        {{ form.csrf_token }}
     </form>
 {% endblock %}

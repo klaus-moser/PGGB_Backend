@@ -1,6 +1,10 @@
-from flask_restful import Resource
+from flask import Blueprint, redirect, url_for
 
 
-class DrinkUpload(Resource):
-    def get(self):
-        return "Hello World!"
+drink = Blueprint('drink', __name__)
+
+
+@drink.route('/upload')
+def upload():
+    # TODO
+    return redirect(url_for('main.gallery'))

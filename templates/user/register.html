@@ -7,7 +7,7 @@
 {% block content %}
     <h1> Registration </h1>
 
-    <form action="{{ url_for('userregister') }}" method="POST">
+    <form action="{{ url_for('user.register') }}" method="POST">
 
         {{ displayField(form.username, 'Username', autocomplete='off', autofocus=true) }}
 
@@ -15,12 +15,13 @@
 
         {{ displayField(form.password, 'Password') }}
 
-        {{ displayField(form.confirm_pwd, 'Retype Password') }}
+        {{ displayField(form.confirm_pwd, 'Confirm Password') }}
 
         <div>
             {{ form.submit_button }}
         </div>
+        {{ form.csrf_token }}
     </form>
-      <a href="{{url_for('userlogin')}}" class="w-40 btn btn-primary">Log In</a>
-     <a href="{{url_for('contact')}}" class="w-40 btn btn-primary">Contact us</a>
+      <a href="{{url_for('user.login')}}" class="w-40 btn btn-primary">Log In</a>
+     <a href="{{url_for('main.contact')}}" class="w-40 btn btn-primary">Contact us</a>
 {% endblock %}

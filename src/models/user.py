@@ -7,14 +7,16 @@ class UserModel(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
-    email = db.Column(db.String(80))
+    username = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(80))
+    img_url = db.Column(db.String(255))
 
-    def __init__(self, username, email, password, confirm_pwd=None):  # TODO: Better solution
+    def __init__(self, username, email, hashed_password, img_url=None):
         self.username = username
         self.email = email
-        self.password = password
+        self.password = hashed_password
+        self.img_url = img_url
 
     def json(self) -> dict:
         """
@@ -33,6 +35,16 @@ class UserModel(db.Model, UserMixin):
         :return: Object of the User class.
         """
         return cls.query.filter_by(username=username).first()
+
+    @classmethod
+    def find_by_email(cls, email: str) -> object:
+        """
+        Find an (already registered) user by the given email.
+
+        :param email: Email to search for the user.
+        :return: Object of the User class.
+        """
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def find_by_id(cls, id_: str) -> object:
