@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+    <h1> Login </h1>
+
+    <form action="{{ url_for('user.login') }}" method="POST">
+
+        {{ displayField(form.username, 'Username', autocomplete='off', autofocus=true) }}
+
+        {{ displayField(form.password, 'Password') }}
+
+        <div>
+            {{ form.login_button }}
+        </div>
+
+        <div>
+             <a href="{{url_for('user.register')}}" class="w-40 btn btn-primary">Register</a>
+        </div>
+
+        <div>
+            <a href="{{url_for('user.reset_password')}}" class="w-40 btn btn-primary">Reset Password</a>
+        </div>
+
+        <div>
+             <a href="{{url_for('main.contact')}}" class="w-40 btn btn-primary">Contact Us</a>
+        </div>
+        {{ form.csrf_token }}
+    </form>
+{% endblock %}

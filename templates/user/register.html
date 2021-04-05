@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block title %} Registration {% endblock %}
+
+{% block content %}
+    <h1> Registration </h1>
+
+    <form action="{{ url_for('user.register') }}" method="POST">
+
+        {{ displayField(form.username, 'Username', autocomplete='off', autofocus=true) }}
+
+        {{ displayField(form.email, 'Email', autocomplete='off') }}
+
+        {{ displayField(form.password, 'Password') }}
+
+        {{ displayField(form.confirm_pwd, 'Confirm Password') }}
+
+        <div>
+            {{ form.submit_button }}
+        </div>
+        {{ form.csrf_token }}
+    </form>
+      <a href="{{url_for('user.login')}}" class="w-40 btn btn-primary">Log In</a>
+     <a href="{{url_for('main.contact')}}" class="w-40 btn btn-primary">Contact us</a>
+{% endblock %}

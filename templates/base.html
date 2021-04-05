@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="A fun web app to rate your own or friends drinks!">
+        <meta name="keywords" content="Python, Flask, Photo, Sharing, Drinks, 42">
+        <meta name="author" content="Klaus Moser">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+        <!-- Title -->
+        {% if title %}
+        <title>{{ title }} - PGGB</title>
+        {% else %}
+        <title>PAN-GALACTIC-GARGLE-BLASTER</title>
+        {% endif %}
+
+    </head>
+    <body>
+        <!-- Top Navigation Bar -->
+        {% if current_user.is_authenticated %}
+              <div class="hidden md:flex">
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('user.logout')}}">Logout</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.contact')}}">Contact Us</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('drink.upload')}}">Upload</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.gallery')}}">Gallery</a>
+              </div>
+        {% endif %}
+
+        <!-- Login & Sign Up buttons vs My Account depending on whether user is signed in -->
+        {% if current_user.is_anonymous %}
+            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('user.login')}}">Login</a>
+            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('user.register')}}">Register</a>
+        {% else %}
+            <a class="w-28 btn btn-primary " href="{{url_for('user.profile', username=current_user.username)}}">My Profile</a>
+        {% endif %}
+
+        <!-- Main block -->
+        {% block content %}
+
+        {% endblock %}
+
+        <!-- Footer with static content -->
+        <footer>
+
+        </footer>
+    </body>
+</html>
