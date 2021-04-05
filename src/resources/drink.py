@@ -1,6 +1,9 @@
-from flask_restful import Resource
+from flask import Blueprint
 
 
-class DrinkUpload(Resource):
-    def get(self):
-        return "Hello World!"
+drink = Blueprint('drink', __name__)
+
+
+@drink.route('/upload')
+def upload(self):
+    return "Hello World!"

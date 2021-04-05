@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block content %}
+    <img src="{{user.img_url}}" alt="">
+
+    <div>
+    {% if user.username == current_user.username or current_user.username == 'admin' %}
+        <div class="flex justify-between gap-10">
+            <a href=" {{url_for('user.edit_profile', user_id=user.id)}} "
+                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Edit Account</a>
+            <a href="{{url_for('user.delete_account', user_id=user.id)}}"
+                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Delete Account</a>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}

@@ -13,7 +13,7 @@ def index():
     Index Resource. Render the 'index.html' landing page.
     """
     if current_user.is_authenticated:
-        return redirect(url_for('gallery'))
+        return redirect(url_for('main.gallery'))
     return make_response(render_template('main/index.html', title="Index"), 200)
 
 
@@ -40,7 +40,7 @@ def contact():
     if contact_form.validate_on_submit():
         # TODO: send_mail
         flash("Your message has been sent!", "success")
-        redirect(url_for('gallery'))
+        redirect(url_for('main.gallery'))
 
     elif request.method == 'GET':
 

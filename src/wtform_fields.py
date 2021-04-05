@@ -64,13 +64,17 @@ class RegisterForm(FlaskForm):
         """
         if UserModel.find_by_username(username=username.data):
             raise ValidationError("A user '{}' already exists!".format(username.data))
-    """
+
     # Custom validator to check email upfront
     def validate_email(self, email):
+        """
+        Validate a given email.
 
+        :param email: Email to be validated via the database.
+        """
         if UserModel.find_by_email(email=email.data):
             raise ValidationError("A email '{}' already exists!".format(email.data))
-    """
+
 
 class LoginForm(FlaskForm):
     """
