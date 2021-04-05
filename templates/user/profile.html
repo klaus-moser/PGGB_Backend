@@ -4,7 +4,7 @@
 
 {% block content %}
     <img src="{{user.img_url}}" alt="">
-
+    <h2> This is your Profile, {{ user.username }}</h2>
     <div>
     {% if user.username == current_user.username or current_user.username == 'admin' %}
         <div class="flex justify-between gap-10">

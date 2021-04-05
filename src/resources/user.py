@@ -52,7 +52,7 @@ def login():
 
         user_ = UserModel.find_by_username(login_form.username.data)
 
-        if user and pbkdf2_sha256.verify(login_form.password.data, user_.password):
+        if user_ and pbkdf2_sha256.verify(login_form.password.data, user_.password):
             # Login
             login_user(user=user_)
             flash(f"Welcome back, {user_.username}!", "success")
@@ -81,8 +81,8 @@ def profile(username):  # TODO: return user profile
 
     :param username: String with current user.
     """
-    user = UserModel.find_by_username(username)
-    return render_template('user/profile.html', title=f"{user.username}", user=user)
+    user_ = UserModel.find_by_username(username)  # TODO: bug: double render of profile.html
+    return make_response(render_template('user/profile.html', title=f"{user_.username}", user=user_))
 
 
 @user.route('/logout')
@@ -147,4 +147,4 @@ def edit_profile(user_id):  # TODO:
     """
     Delete a user from the db.
     """
-    return "hello world"
+    return redirect(url_for('main.gallery'))
