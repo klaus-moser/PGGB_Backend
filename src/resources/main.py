@@ -40,11 +40,11 @@ def contact():
     if contact_form.validate_on_submit():
         # TODO: send_mail
         flash("Your message has been sent!", "success")
-        redirect(url_for('main.gallery'))
+        return redirect(url_for('main.gallery'))
 
     elif request.method == 'GET':
-
         if current_user.is_authenticated:
             contact_form.username_field.data = current_user.username
             contact_form.email_field.data = current_user.email
+
         return make_response(render_template('main/contact.html', form=contact_form, title="Contact Us"), 200)
