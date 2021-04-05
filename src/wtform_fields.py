@@ -102,3 +102,13 @@ class LoginForm(FlaskForm):
         InputRequired(message='Password required!'), validate_credentials])
 
     login_button = SubmitField('Login')
+
+
+class DeleteAccountForm(FlaskForm):
+    """
+    This is the form class for the '/delete_account' endpoint.
+    """
+    password = PasswordField('password_field', validators=[
+        InputRequired(message='Password Required')])
+
+    delete_button = SubmitField('Delete Account')
