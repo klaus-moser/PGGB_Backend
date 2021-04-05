@@ -39,31 +39,38 @@ class RegisterForm(FlaskForm):
     """
     username = StringField('username_label', validators=[
         InputRequired(message='Username required!'),
-        Length(min=4, max=25, message='Username must be between 4-25 characters!')])
+        Length(min=4, max=20, message='Username must be between 4-20 characters!')])
 
     email = StringField('email_label', validators=[
         InputRequired(message='Email required!'),
-        Length(min=4, max=80, message='Must be a valid Email!')])
+        Length(max=80, message='Must be a valid Email!')])
 
     password = PasswordField('password_label', validators=[
         InputRequired(message='Password required!'),
-        Length(min=6, max=30, message='Password must be between 4-25 characters!')])
+        Length(min=4, max=20, message='Password must be between 4-20 characters!')])
 
     confirm_pwd = PasswordField('confirm_pwd_label', validators=[
-        InputRequired(message='Password required!'),
+        InputRequired(message='Confirm Password!'),
         EqualTo('password', message='Passwords must match!')])
 
     submit_button = SubmitField('Register')
 
     # Custom validator to check username upfront
-    def validate_username(self, username) -> None:
+    def validate_username(self, username):
         """
         Validate a given username.
+
         :param username: Username to be validated via the database.
         """
         if UserModel.find_by_username(username=username.data):
             raise ValidationError("A user '{}' already exists!".format(username.data))
+    """
+    # Custom validator to check email upfront
+    def validate_email(self, email):
 
+        if UserModel.find_by_email(email=email.data):
+            raise ValidationError("A email '{}' already exists!".format(email.data))
+    """
 
 class LoginForm(FlaskForm):
     """

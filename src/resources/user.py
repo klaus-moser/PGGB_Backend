@@ -21,49 +21,11 @@ def register():
     """
     Register a new user.
     """
-    parser = reqparse.RequestParser()
-
-    parser.add_argument(
-        'username',
-        type=str,
-        required=True,
-        help="This field cannot be blank!"
-    )
-    parser.add_argument(
-        'email',
-        type=str,
-        required=True,
-        help="This field cannot be blank!"
-    )
-    parser.add_argument(
-        'password',
-        type=str,
-        required=True,
-        help="This field cannot be blank!"
-    )
-    parser.add_argument(
-        'confirm_pwd',
-        type=str,
-        required=True,
-        help="This field cannot be blank!"
-    )
     register_form = RegisterForm()
 
-    if request.method == 'GET':
+    if request.method == 'POST' and register_form.validate_on_submit():
 
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('user/register.html', form=register_form), 200, headers)
-
-    else:
-        data = parser.parse_args()
-
-        # TODO: login manager?
-        if UserModel.find_by_username(data['username']):
-            return {"message": "A user '{}' already exists!".format(data['username'])}, 400
-
-        # TODO: login manager?
-        elif data['password'] != data['confirm_pwd']:
-            return {"message": "Passwords do not match!"}, 401
+        data = register_form.data
 
         data['password'] = pbkdf2_sha256.hash(data['password'])
 
@@ -71,6 +33,9 @@ def register():
         user_.save_to_db()
 
         return redirect(url_for('/gallery'))
+
+    headers = {'Content-Type': 'text/html'}
+    return make_response(render_template('user/register.html', form=register_form), 200, headers)
 
 
 @user.route('/login', methods=["GET", "POST"])

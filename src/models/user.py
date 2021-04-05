@@ -35,6 +35,16 @@ class UserModel(db.Model, UserMixin):
         return cls.query.filter_by(username=username).first()
 
     @classmethod
+    def find_by_email(cls, email: str) -> object:
+        """
+        Find an (already registered) user by the given email.
+
+        :param email: Email to search for the user.
+        :return: Object of the User class.
+        """
+        return cls.query.filter_by(email=email).first()
+
+    @classmethod
     def find_by_id(cls, id_: str) -> object:
         """
         Find a (already registered) use by the given id.
