@@ -1,11 +1,9 @@
-from flask import render_template, make_response, redirect, url_for, flash
+from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user
-from flask_restful import Resource, reqparse
+from flask_restful import reqparse
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
-                                jwt_required,
-                                get_jwt_identity,
                                 get_jwt,
                                 set_refresh_cookies,
                                 set_access_cookies)
@@ -15,27 +13,13 @@ from src.blacklist import BLACKLIST
 from src.wtform_fields import RegisterForm, LoginForm
 
 
-class User(Resource):
-
-    @classmethod
-    # TODO: @jwt_required()
-    def get(cls, user_id) -> tuple:
-        """
-        Get the user by an id.
-
-        :param user_id: Integer of userid.
-        :return: User or .json message
-        """
-        user = UserModel.find_by_id(id_=user_id)
-
-        if not user:
-            return {'message': 'User not found!'}, 404
-        return user.json(), 200
+user = Blueprint('user', __name__)
 
 
-class UserRegister(Resource):
+@user.route('/register', methods=["GET", "POST"])
+def register():
     """
-    Class to register a new user.
+    Register a new user.
     """
     parser = reqparse.RequestParser()
 
@@ -63,27 +47,15 @@ class UserRegister(Resource):
         required=True,
         help="This field cannot be blank!"
     )
+    register_form = RegisterForm()
 
-    @staticmethod
-    def get():
-        """
-        Render the 'register.html'.
-
-        :return: 'register'
-        """
-        register_form = RegisterForm()
+    if request.method == 'GET':
 
         headers = {'Content-Type': 'text/html'}
         return make_response(render_template('user/register.html', form=register_form), 200, headers)
 
-    @classmethod
-    def post(cls) -> tuple:
-        """
-        Add a new user to the data base.
-
-        :return: {json_message}, status code
-        """
-        data = cls.parser.parse_args()
+    else:
+        data = parser.parse_args()
 
         # TODO: login manager?
         if UserModel.find_by_username(data['username']):
@@ -95,14 +67,17 @@ class UserRegister(Resource):
 
         data['password'] = pbkdf2_sha256.hash(data['password'])
 
-        user = UserModel(**data)
-        user.save_to_db()
+        user_ = UserModel(**data)
+        user_.save_to_db()
 
-        # TODO: message?
-        return {"message": "User created successfully."}, 201
+        return redirect(url_for('/gallery'))
 
 
-class UserLogin(Resource):
+@user.route('/login', methods=["GET", "POST"])
+def login():
+    """
+    Login a new user.
+    """
     parser = reqparse.RequestParser()
     parser.add_argument(
         'username',
@@ -116,98 +91,76 @@ class UserLogin(Resource):
         required=True,
         help="This field cannot be blank!"
     )
+    login_form = LoginForm()
 
-    @staticmethod
-    def get():
-        """
-        Render the login.html page.
-        """
-        login_form = LoginForm()
-
+    if request.method == 'GET':
         headers = {'Content-Type': 'text/html'}
         return make_response(render_template('user/login.html', form=login_form), 200, headers)
 
-    @classmethod
-    def post(cls) -> tuple:
-        """
-        Login a user with username and password.
-        Additionally create the 'access_token' & 'refresh_token'.
+    else:
+        data = parser.parse_args()
 
-        :return: Token (access & refresh) or info message.
-        """
-        data = cls.parser.parse_args()
+        user_ = UserModel.find_by_username(data['username'])
 
-        user = UserModel.find_by_username(data['username'])
-
-        if user and pbkdf2_sha256.verify(data['password'], user.password):
+        if user and pbkdf2_sha256.verify(data['password'], user_.password):
             # Login
-            login_user(user=user)
-            flash(f"Welcome back, {user.username}!", "success")
+            login_user(user=user_)
+            flash(f"Welcome back, {user_.username}!", "success")
 
             # create access & refresh token + save user.id in that token
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=user_.id, fresh=True)
+            refresh_token = create_refresh_token(identity=user_.id)
 
             response = make_response(render_template('main/gallery.html'), 200)
             set_access_cookies(response, access_token)
             set_refresh_cookies(response, refresh_token)
             return response
 
-        return {'message': 'Invalid credentials!'}, 401
+        return redirect(url_for('/login'))
 
 
-class UserLogout(Resource):
+@user.route('/logout', methods=["POST"])
+def logout():
+    """
+    Logout user.
+    """
+    jti = get_jwt()['jti']
+    BLACKLIST.add(jti)
 
-    @jwt_required()
-    def get(self):
-        """
-        Put jti on the BLACKLIST to deny further access to endpoints.
-        """
-        jti = get_jwt()['jti']
-        BLACKLIST.add(jti)
-
-        logout_user()
-        flash("Logged out!", "success")
-        return redirect(url_for('index'))
+    logout_user()
+    flash("Logged out!", "success")
+    return redirect(url_for('index'))
 
 
+@user.route('/reset_password', methods=["GET", "POST"])
+def reset_password():  # TODO
+    """
+    Reset user password.
+    """
+    return make_response(render_template('error/error-404.html'))
+
+
+@user.route('/delete_account', methods=["GET", "POST"])
+def delete_account(user_id):
+    """
+    Delete a user from the db.
+    """
+    user_ = UserModel.find_by_id(id_=user_id)
+
+    if not user:
+        # TODO: flash
+        return {'message': 'User not found!'}, 404
+    user_.delete_from_db()
+    return redirect(url_for('/'))
+
+
+"""
 class TokenRefresh(Resource):
 
     @jwt_required(refresh=True)
     def post(self) -> tuple:
-        """
-        Refresh an existing (access-)token.
-
-        :return: {'access_token': new_token} BUT:(fresh=False), 200
-        """
         current_user = get_jwt_identity()
 
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': new_token}, 200  # TODO: implement make_response
-
-
-class UserResetPassword(Resource):
-
-    # TODO
-    def get(self):
-        return make_response(render_template('error/error-404.html'))
-
-
-class UserDelete(Resource):
-
-    @classmethod
-    # TODO: @jwt_required(fresh=True)
-    def delete(cls, user_id) -> tuple:
-        """
-        Delete a user from the db.
-        Requires a fresh JWT.
-
-        :param user_id: Int of user id.
-        :return: .json message + status code.
-        """
-        user = UserModel.find_by_id(id_=user_id)
-
-        if not user:
-            return {'message': 'User not found!'}, 404
-        user.delete_from_db()
-        return {'message': 'User deleted.'}, 200
+"""

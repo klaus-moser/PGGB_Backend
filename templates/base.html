@@ -19,19 +19,19 @@
         <!-- Top Navigation Bar -->
         {% if current_user.is_authenticated %}
               <div class="hidden md:flex">
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('userlogout')}}">Logout</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('contact')}}">Contact Us</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('drinkupload')}}">Upload</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('gallery')}}">Gallery</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('user.logout')}}">Logout</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.contact')}}">Contact Us</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('')}}">Upload</a>
+                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.gallery')}}">Gallery</a>
               </div>
         {% endif %}
 
         <!-- Login & Sign Up buttons vs My Account depending on whether user is signed in -->
         {% if current_user.is_anonymous %}
-            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('userlogin')}}">Login</a>
-            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('userregister')}}">Register</a>
+            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('user.login')}}">Login</a>
+            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('user.register')}}">Register</a>
         {% else %}
-            <a class="w-28 btn btn-primary " href="{{url_for('user', user_id=current_user.id)}}">My Profile</a>
+            <a class="w-28 btn btn-primary " href="{{url_for('', user_id=current_user.id)}}">My Profile</a>
         {% endif %}
 
         <!-- Main block -->

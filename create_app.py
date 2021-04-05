@@ -4,9 +4,10 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from src.models.user import UserModel
-from src.resources.user import UserRegister, User, UserLogin, UserLogout, UserResetPassword
-from src.resources.main import Index, Gallery, Contact
-from src.resources.drink import DrinkUpload
+from src.resources.main import main
+from src.resources.user import user
+
+
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -29,10 +30,10 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of .db, JWT,API & loginManager
+    # Initialization of .db, JWT & loginManager
     db.init_app(app=app)
     jwt = JWTManager(app=app)
-    api = Api(app=app)
+
     login_manager = LoginManager()
     login_manager.init_app(app=app)
 
@@ -117,16 +118,7 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
         return render_template('error/error-500.html'), 500
 
     # Endpoints
-    api.add_resource(Index, '/')
-    api.add_resource(Gallery, '/gallery')
-    api.add_resource(Contact, '/contact')
-
-    api.add_resource(User, '/user/<int:user_id>')
-    api.add_resource(UserLogin, '/login')
-    api.add_resource(UserLogout, '/logout')
-    api.add_resource(UserRegister, '/register')
-    api.add_resource(UserResetPassword, '/reset_password')
-
-    api.add_resource(DrinkUpload, '/upload')
+    app.register_blueprint(main)
+    app.register_blueprint(user)
 
     return app
