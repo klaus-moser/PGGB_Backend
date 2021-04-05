@@ -4,11 +4,9 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from src.models.user import UserModel
-
 from src.resources.user import UserRegister, User, UserLogin, UserLogout, UserResetPassword
 from src.resources.main import Index, Gallery, Contact
 from src.resources.drink import DrinkUpload
-
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -16,10 +14,7 @@ from src.db import db
 
 def create_app(mode: str = 'DEPLOY') -> Flask:
     """
-    Creates a Flask app with a specific configuration.
-    Default: PRODUCTION.
-    It also initialises a data base, API & JWT.
-    Defines endpoints and custom http-status-code-error-handler.
+    Creates a Flask app with a specific configuration (Default: PRODUCTION.)
 
     :param mode: 'PRODUCTION', 'DEVELOP', 'TEST'
     :return: Flask app.
