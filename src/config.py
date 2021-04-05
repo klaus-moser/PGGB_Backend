@@ -1,7 +1,8 @@
 from os import environ
 from os.path import dirname, join
+from datetime import timedelta
 
-# Modes for configuration
+
 modes: dict = {'PRODUCTION': 'ProductionConfig',
                'DEVELOP': 'DevelopmentConfig',
                'TEST': 'TestingConfig'}
@@ -30,15 +31,16 @@ class Config(object):
     JWT_SECRET_KEY = "B\xb2?.\xdf\x9f\xa7m\xf8\x8a%,\xf7\xc4\xfa\x91"  # TODO: *** Change ***
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=120)
+    JWT_COOKIE_SECURE = False
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=15)
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_CSRF_CHECK_FORM = True
 
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL', 'sqlite:///' + DB_NAME + '.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
-
-    LOG_LEVEL = 'INFO'
-    LOG_FILE = join(dirname(__file__), 'logs/flask_app.log')
-    LOG_FILEMODE = 'w'
-    LOGGER_NAME = 'flask_app'
 
 
 class ProductionConfig(Config):

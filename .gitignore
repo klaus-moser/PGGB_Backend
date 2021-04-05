@@ -214,3 +214,5 @@ fabric.properties
 
 # Data base
 *.db
+
+templates/hod-dogz.html

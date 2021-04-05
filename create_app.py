@@ -1,14 +1,12 @@
 from flask import Flask, render_template, jsonify
 from flask_login import LoginManager
-from logging import getLogger, basicConfig
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
-from time import ctime
 
-# from src.resources.user import UserRegister, User, UserLogin, TokenRefresh, UserLogout
-# from src.resources.item import Item, ItemList
-# from src.resources.store import Store, StoreList
-from src.resources.index import Index
+from src.models.user import UserModel
+from src.resources.user import UserRegister, User, UserLogin, UserLogout, UserResetPassword
+from src.resources.main import Index, Gallery, Contact
+from src.resources.drink import DrinkUpload
 from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
@@ -16,10 +14,7 @@ from src.db import db
 
 def create_app(mode: str = 'DEPLOY') -> Flask:
     """
-    Creates a Flask app with a specific configuration.
-    Default: PRODUCTION.
-    It also initialises a data base, API & JWT.
-    Defines endpoints and custom http-status-code-error-handler.
+    Creates a Flask app with a specific configuration (Default: PRODUCTION.)
 
     :param mode: 'PRODUCTION', 'DEVELOP', 'TEST'
     :return: Flask app.
@@ -34,21 +29,21 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of logger
-    log = getLogger(app.config['LOGGER_NAME'])
-    basicConfig(filename=app.config['LOG_FILE'],
-                filemode=app.config['LOG_FILEMODE'],
-                level=app.config['LOG_LEVEL'])
-
-    # Initialization of .db, JWT & API
-    log.debug("*** INIT START *** {}".format(ctime()))
+    # Initialization of .db, JWT,API & loginManager
     db.init_app(app=app)
     jwt = JWTManager(app=app)
     api = Api(app=app)
+    login_manager = LoginManager()
+    login_manager.init_app(app=app)
 
-    # TODO: Configure flask-login
-    # login_manager = LoginManager()
-    # login_manager.init_app(app=app)
+    @login_manager.user_loader
+    def load_user(user_id: str) -> object:
+        """
+        Load a user when he logs in an give it to the login_manager.
+        :param user_id: Userid.
+        :return: User object.
+        """
+        return UserModel.find_by_id(id_=user_id)
 
     @jwt.additional_claims_loader
     def add_claims_to_jwt(identity: int) -> dict:
@@ -72,7 +67,7 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
         return jwt_payload['jti'] in BLACKLIST
 
     @jwt.expired_token_loader
-    def expired_token_callback():
+    def expired_token_callback(jwt_headers, jwt_payload):
         return jsonify({
             'description': 'The token has expired.',
             'error': 'token_expired'
@@ -115,24 +110,23 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
 
     @app.errorhandler(404)
     def page_not_found(error) -> tuple:
-        log.warning("page_not_found: {}".format(ctime()))
-        return render_template('error-404.html'), 404
+        return render_template('error/error-404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(error) -> tuple:
-        log.error("internal_server_error: {}".format(ctime()))
-        return render_template('error-500.html'), 500
+        return render_template('error/error-500.html'), 500
 
     # Endpoints
     api.add_resource(Index, '/')
-    # api.add_resource(UserLogin, '/login')
-    # api.add_resource(UserLogout, '/logout')
-    # api.add_resource(UserRegister, '/register')
-    # api.add_resource(Item, '/item/<string:name>')
-    # api.add_resource(ItemList, '/items')
-    # api.add_resource(Store, '/store/<string:name>')
-    # api.add_resource(StoreList, '/stores')
-    # api.add_resource(TokenRefresh, '/refresh')
+    api.add_resource(Gallery, '/gallery')
+    api.add_resource(Contact, '/contact')
 
-    log.debug("*** INIT COMPLETED *** {}".format(ctime()))
+    api.add_resource(User, '/user/<int:user_id>')
+    api.add_resource(UserLogin, '/login')
+    api.add_resource(UserLogout, '/logout')
+    api.add_resource(UserRegister, '/register')
+    api.add_resource(UserResetPassword, '/reset_password')
+
+    api.add_resource(DrinkUpload, '/upload')
+
     return app
