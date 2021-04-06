@@ -4,7 +4,10 @@
 
 {% block content %}
     <img src="{{user.img_url}}" alt="">
-    <h2> This is your Profile, {{ user.username }}</h2>
+    <h1> This is your Profile, {{ user.username }}!</h1>
+    <div>
+        <img src="{{ user.img_url }}" onerror="this.src='https://image.flaticon.com/icons/png/128/1023/1023656.png'"/>
+    </div>
     <div>
     {% if user.username == current_user.username or current_user.username == 'admin' %}
         <div class="flex justify-between gap-10">
@@ -12,6 +15,28 @@
                 class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Edit Account</a>
             <a href="{{url_for('user.delete_account', user_id=user.id)}}"
                 class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Delete Account</a>
+        </div>
+    {% endif %}
+    </div>
+
+    <div>
+    <h2> Your Memes </h2>
+    {% if meme == None %}
+        <div>
+            <h5> *** No memes uploaded yet *** </h5>
+        </div>
+        <div class="flex justify-between gap-10">
+            <a href=" {{url_for('meme.upload')}} "
+                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Upload a meme</a>
+        </div>
+    {% endif %}
+    </div>
+
+    <div>
+    <h2> Your Favorites </h2>
+    {% if favorites == None %}
+        <div>
+            <h5> *** No favorites memes yet *** </h5>
         </div>
     {% endif %}
     </div>

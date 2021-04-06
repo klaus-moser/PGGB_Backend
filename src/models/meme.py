@@ -1,8 +1,8 @@
 from src.db import db
 
 # TODO:
-class DrinkModel(db.Model):
-    __tablename__ = 'drinks'
+class MemeModel(db.Model):
+    __tablename__ = 'meme'
 
     name = db.Column(db.String(80), nullable=False)
     inventor = db.Column(db.String(80))

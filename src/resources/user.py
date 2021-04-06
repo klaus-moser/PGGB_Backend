@@ -75,14 +75,20 @@ def login():
 
 
 @user.route('/profile/<username>', methods=["GET"])
-def profile(username):  # TODO: return user profile
+def profile(username):
     """
     Show user profile.
 
     :param username: String with current user.
     """
-    user_ = UserModel.find_by_username(username)  # TODO: bug: double render of profile.html
-    return make_response(render_template('user/profile.html', title=f"{user_.username}", user=user_))
+    if username == 'None':   # TODO: bug: "GET /profile/None HTTP/1.1" 200
+        username = current_user.username
+
+    user_ = UserModel.find_by_username(username)
+    return make_response(render_template('user/profile.html',
+                                         title=f"{user_.username}",
+                                         user=user_, meme=None,
+                                         favorites=None))
 
 
 @user.route('/logout')
