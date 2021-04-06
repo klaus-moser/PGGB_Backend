@@ -1,5 +1,4 @@
 from os import environ
-from os.path import dirname, join
 from datetime import timedelta
 
 
