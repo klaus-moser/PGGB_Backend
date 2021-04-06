@@ -8,19 +8,21 @@
     <div>
     
         {% if user.img_url == None %}
-            <img src="{{ rand_img }}"  alt="Profile Pic" width="200" height="200"/>
+            <img src="{{ rand_img }}"  alt="" width="200" height="200"/>
         {% else %}
-            <img src="{{ user.img_url }}"  alt="Profile Pic" width="200" height="200"/>
+            <img src="{{ user.img_url }}"  alt="" width="200" height="200"/>
         {% endif %}
         
     </div>
     <div>
     {% if user.username == current_user.username or current_user.username == 'admin' %}
-        <div class="flex justify-between gap-10">
-            <a href=" {{url_for('user.edit_profile', user_id=user.id)}} "
-                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Edit Account</a>
-            <a href="{{url_for('user.delete_account', user_id=user.id)}}"
-                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Delete Account</a>
+        <div>
+            <a href=" {{url_for('user.select_avatar')}} ">Edit Avatar</a>
+        </div>
+
+        <div>
+            <a href=" {{url_for('user.edit_profile', user_id=user.id)}} ">Edit Account</a>
+            <a href="{{url_for('user.delete_account', user_id=user.id)}}">Delete Account</a>
         </div>
     {% endif %}
     </div>
@@ -31,9 +33,8 @@
         <div>
             <h5> *** No memes uploaded yet *** </h5>
         </div>
-        <div class="flex justify-between gap-10">
-            <a href=" {{url_for('meme.upload')}} "
-                class="text-lg font-semibold text-gray-600 hover:underline focus:italic">Upload a meme</a>
+        <div>
+            <a href=" {{url_for('meme.upload')}} ">Upload a meme</a>
         </div>
     {% endif %}
     </div>

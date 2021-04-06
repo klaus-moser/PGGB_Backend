@@ -33,13 +33,13 @@ def register():
 
         # Set a random avatar
         img_url = (f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
-                   f'/download?path=%2F&files={randint(1, 21)}.png')
+                   f'/download?path=%2F&files={randint(1, 20)}.png')
 
         user_ = UserModel(username, email, hashed_password, img_url)
         user_.save_to_db()
 
         login_user(user_)
-        return redirect(url_for('main.gallery'))
+        return redirect(url_for('user.select_avatar'))
 
     headers = {'Content-Type': 'text/html'}
     return make_response(render_template('user/register.html', form=register_form), 200, headers)
@@ -182,12 +182,18 @@ def edit_profile(user_id):
                                user=user_, form=edit_form)
 
 
-@user.route('/select_avatar', methods=["GET"])
+@user.route('/select_avatar/', methods=["GET", "POST"])
 def select_avatar():
     """
     Edit the user's avatar.
     """
-    # TODO: select option
+    if request.args.get('selected_avatar'):
+        user_ = UserModel.find_by_username(current_user.username)
+
+        user_.img_url = request.args.get('selected_avatar')
+        user_.save_to_db()
+        return redirect(url_for('user.profile', username=user_.username))
+
     # Default url on owncloud
     avatars = [
         f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
