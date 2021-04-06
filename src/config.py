@@ -22,10 +22,9 @@ class Config(object):
     DB_USERNAME = "foo"  # TODO: *** Change ***
     DB_PASSWORD = "bar"  # TODO: *** Change ***
 
-    SESSION_COOKIE_SECURE = True
-
     FLASK_SERVER_NAME = 'localhost:5000'
     FLASK_THREADED = True
+    SESSION_COOKIE_SECURE = True
 
     JWT_SECRET_KEY = "B\xb2?.\xdf\x9f\xa7m\xf8\x8a%,\xf7\xc4\xfa\x91"  # TODO: *** Change ***
     JWT_BLACKLIST_ENABLED = True
