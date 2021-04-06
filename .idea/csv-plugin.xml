@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\templates\user\edit_profile.html">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

@@ -10,7 +10,7 @@ from flask_jwt_extended import (create_access_token,
 
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
-from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm
+from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
 
 
 user = Blueprint('user', __name__)
@@ -83,7 +83,8 @@ def profile(username):
     """
     if username == 'None':   # TODO: bug: "GET /profile/None HTTP/1.1" 200
         username = current_user.username
-
+    # TODO: meme
+    # TODO: favorites
     user_ = UserModel.find_by_username(username)
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
@@ -149,8 +150,26 @@ def delete_account(user_id):
 
 
 @user.route('/edit_profile/<user_id>', methods=["GET", "POST"])
-def edit_profile(user_id):  # TODO:
+def edit_profile(user_id):
     """
     Delete a user from the db.
     """
-    return redirect(url_for('main.gallery'))
+    user_ = UserModel.find_by_id(user_id)
+    if user_ != current_user and current_user.username != 'admin':
+        return redirect(url_for('main.gallery'))
+
+    edit_form = EditProfileForm()
+
+    if edit_form.validate_on_submit():
+        user_.username = edit_form.username_field.data
+        user_.email = edit_form.email_field.data
+        user_.save_to_db()
+
+        return redirect(url_for('user.profile', username=user_.username))
+
+    elif request.method == "GET":
+        edit_form.username_field.data = user_.username
+        edit_form.email_field.data = user_.email
+
+        return render_template('user/edit_profile.html', title='Edit Profile',
+                               user=user_, form=edit_form)
