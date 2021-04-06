@@ -1,6 +1,7 @@
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
+from random import randint
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
                                 get_jwt,
@@ -10,7 +11,7 @@ from flask_jwt_extended import (create_access_token,
 
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
-from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm
+from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
 
 
 user = Blueprint('user', __name__)
@@ -31,11 +32,15 @@ def register():
         # Hashing: incl. 16-byte salt (auto) + 29.000 iterations (default)
         hashed_password = pbkdf2_sha256.hash(password)
 
-        user_ = UserModel(username, email, hashed_password)
+        # Set a random avatar
+        img_url = (f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
+                   f'/download?path=%2F&files={randint(1, 20)}.png')
+
+        user_ = UserModel(username, email, hashed_password, img_url)
         user_.save_to_db()
 
         login_user(user_)
-        return redirect(url_for('main.gallery'))
+        return redirect(url_for('user.select_avatar'))
 
     headers = {'Content-Type': 'text/html'}
     return make_response(render_template('user/register.html', form=register_form), 200, headers)
@@ -75,14 +80,22 @@ def login():
 
 
 @user.route('/profile/<username>', methods=["GET"])
-def profile(username):  # TODO: return user profile
+def profile(username):
     """
     Show user profile.
 
     :param username: String with current user.
     """
-    user_ = UserModel.find_by_username(username)  # TODO: bug: double render of profile.html
-    return make_response(render_template('user/profile.html', title=f"{user_.username}", user=user_))
+    user_ = UserModel.find_by_username(username)
+
+    # TODO: bug: "GET /profile/None HTTP/1.1" 200
+    # TODO: meme
+    # TODO: favorites
+    return make_response(render_template('user/profile.html',
+                                         title=f"{user_.username}",
+                                         user=user_,
+                                         meme=None,
+                                         favorites=None))
 
 
 @user.route('/logout')
@@ -143,8 +156,48 @@ def delete_account(user_id):
 
 
 @user.route('/edit_profile/<user_id>', methods=["GET", "POST"])
-def edit_profile(user_id):  # TODO:
+def edit_profile(user_id):
     """
-    Delete a user from the db.
+    Edit a user.
     """
-    return redirect(url_for('main.gallery'))
+    user_ = UserModel.find_by_id(user_id)
+    if user_ != current_user and current_user.username != 'admin':
+        return redirect(url_for('main.gallery'))
+
+    edit_form = EditProfileForm()
+
+    if edit_form.validate_on_submit():
+        user_.username = edit_form.username_field.data
+        user_.email = edit_form.email_field.data
+        user_.save_to_db()
+
+        return redirect(url_for('user.profile', username=user_.username))
+
+    elif request.method == "GET":
+        edit_form.username_field.data = user_.username
+        edit_form.email_field.data = user_.email
+
+        return render_template('user/edit_profile.html', title='Edit Profile',
+                               user=user_, form=edit_form)
+
+
+@user.route('/select_avatar/', methods=["GET"])
+def select_avatar():
+    """
+    Edit the user's avatar.
+    """
+    if request.args.get('selected_avatar'):
+        user_ = UserModel.find_by_username(current_user.username)
+
+        user_.img_url = request.args.get('selected_avatar')
+        user_.save_to_db()
+        return redirect(url_for('user.profile', username=user_.username))
+
+    # Default url on owncloud
+    avatars = [
+        f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
+        f'/download?path=%2F&files={i}.png'
+        for i in range(1, 21)]
+
+    return render_template('user/select_avatar.html', avatars=avatars,
+                           title='Choose Avatar')

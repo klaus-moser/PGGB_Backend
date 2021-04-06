@@ -112,3 +112,36 @@ class DeleteAccountForm(FlaskForm):
         InputRequired(message='Password Required')])
 
     delete_button = SubmitField('Delete Account')
+
+
+class EditProfileForm(FlaskForm):
+    """
+    This is the form class for the '/edit_profile' endpoint.
+    """
+    username_field = StringField('username_field', validators=[
+        InputRequired(message='Username')])
+
+    email_field = StringField('email_field', validators=[
+        InputRequired(message='Email')])
+
+    submit_button = SubmitField('Submit')
+
+    # Custom validator to check username upfront
+    def validate_username(self, username):
+        """
+        Validate a given username.
+
+        :param username: Username to be validated via the database.
+        """
+        if UserModel.find_by_username(username=username.data):
+            raise ValidationError("A user '{}' already exists!".format(username.data))
+
+    # Custom validator to check email upfront
+    def validate_email(self, email):
+        """
+        Validate a given email.
+
+        :param email: Email to be validated via the database.
+        """
+        if UserModel.find_by_email(email=email.data):
+            raise ValidationError("A email '{}' already exists!".format(email.data))

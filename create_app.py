@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 from src.models.user import UserModel
 from src.resources.main import main
 from src.resources.user import user
-from src.resources.drink import drink
+from src.resources.meme import meme
 
 from src.blacklist import BLACKLIST
 from src.config import modes
@@ -119,6 +119,6 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     # Endpoints
     app.register_blueprint(main)
     app.register_blueprint(user)
-    app.register_blueprint(drink)
+    app.register_blueprint(meme)
 
     return app
