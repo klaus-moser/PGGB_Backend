@@ -13,6 +13,7 @@ from src.models.user import UserModel
 from src.blacklist import BLACKLIST
 from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
 
+
 user = Blueprint('user', __name__)
 
 
@@ -90,8 +91,6 @@ def profile(username):
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: meme
     # TODO: favorites
-    print(user_.img_url)
-
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
                                          user=user_,
@@ -182,7 +181,7 @@ def edit_profile(user_id):
                                user=user_, form=edit_form)
 
 
-@user.route('/select_avatar/', methods=["GET", "POST"])
+@user.route('/select_avatar/', methods=["GET"])
 def select_avatar():
     """
     Edit the user's avatar.
