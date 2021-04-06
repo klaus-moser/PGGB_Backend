@@ -18,21 +18,21 @@
     <body>
         <!-- Top Navigation Bar -->
         {% if current_user.is_authenticated %}
-              <div class="hidden md:flex">
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('user.logout')}}">Logout</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.contact')}}">Contact Us</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('meme.upload')}}">Upload</a>
-                <a class="block mr-4 hover:text-primary-600" href="{{url_for('main.gallery')}}">Gallery</a>
+              <div>
+                <a href="{{url_for('user.logout')}}">Logout</a>
+                <a href="{{url_for('main.contact')}}">Contact Us</a>
+                <a href="{{url_for('meme.upload')}}">Upload</a>
+                <a href="{{url_for('main.gallery')}}">Gallery</a>
               </div>
         {% endif %}
 
         <!-- Login & Sign Up buttons vs My Account depending on whether user is signed in -->
         {% if current_user.is_anonymous %}
-            <a class="ml-2 w-28 btn btn-secondary " href="{{url_for('user.login')}}">Login</a>
-            <a class="ml-2 w-28 btn btn-primary " href="{{url_for('user.register')}}">Register</a>
+            <a href="{{url_for('user.login')}}">Login</a>
+            <a href="{{url_for('user.register')}}">Register</a>
         {% else %}
             <div>
-                <a class="w-28 btn btn-primary " href="{{url_for('user.profile', username=current_user.username)}}">My Profile</a>
+                <a href="{{url_for('user.profile', username=current_user.username)}}">My Profile</a>
             </div>
         {% endif %}
 

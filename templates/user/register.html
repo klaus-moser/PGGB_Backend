@@ -22,6 +22,6 @@
         </div>
         {{ form.csrf_token }}
     </form>
-      <a href="{{url_for('user.login')}}" class="w-40 btn btn-primary">Log In</a>
-     <a href="{{url_for('main.contact')}}" class="w-40 btn btn-primary">Contact us</a>
+      <a href="{{url_for('user.login')}}">Log In</a>
+     <a href="{{url_for('main.contact')}}">Contact us</a>
 {% endblock %}
