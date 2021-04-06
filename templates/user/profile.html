@@ -8,9 +8,9 @@
     <div>
     
         {% if user.img_url == None %}
-            <img src="s"  alt="Profile Pic"/>
+            <img src="{{ rand_img }}"  alt="Profile Pic" width="200" height="200"/>
         {% else %}
-            <img src="{{ user.img_url }}"  alt="Profile Pic"/>
+            <img src="{{ user.img_url }}"  alt="Profile Pic" width="200" height="200"/>
         {% endif %}
         
     </div>

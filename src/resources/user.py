@@ -1,8 +1,7 @@
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
-from os import listdir
-from os.path import join
+from random import randint
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
                                 get_jwt,
@@ -13,7 +12,6 @@ from flask_jwt_extended import (create_access_token,
 from src.models.user import UserModel
 from src.blacklist import BLACKLIST
 from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
-
 
 user = Blueprint('user', __name__)
 
@@ -33,7 +31,11 @@ def register():
         # Hashing: incl. 16-byte salt (auto) + 29.000 iterations (default)
         hashed_password = pbkdf2_sha256.hash(password)
 
-        user_ = UserModel(username, email, hashed_password)
+        # Set a random avatar
+        img_url = (f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
+                   f'/download?path=%2F&files={randint(1, 21)}.png')
+
+        user_ = UserModel(username, email, hashed_password, img_url)
         user_.save_to_db()
 
         login_user(user_)
@@ -83,13 +85,17 @@ def profile(username):
 
     :param username: String with current user.
     """
+    user_ = UserModel.find_by_username(username)
+
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: meme
     # TODO: favorites
-    user_ = UserModel.find_by_username(username)
+    print(user_.img_url)
+
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
-                                         user=user_, meme=None,
+                                         user=user_,
+                                         meme=None,
                                          favorites=None))
 
 
@@ -181,6 +187,7 @@ def select_avatar():
     """
     Edit the user's avatar.
     """
+    # TODO: select option
     # Default url on owncloud
     avatars = [
         f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
