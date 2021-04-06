@@ -12,6 +12,10 @@ class UserModel(db.Model, UserMixin):
     password = db.Column(db.String(80))
     img_url = db.Column(db.String(255))
 
+    # List of UserModels; many-to-1 rel. (Back reference)
+    # lazy: to not create an UserModel for each item yet
+    items = db.relationship('MemeModel', lazy='dynamic')  # self.items is no list anymore but a query builder -> .all()
+
     def __init__(self, username, email, hashed_password, img_url=None):
         self.username = username
         self.email = email
