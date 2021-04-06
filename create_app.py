@@ -20,13 +20,12 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     :return: Flask app.
     """
     app = Flask(__name__)
-
     # Check mode
     if mode not in modes:
         mode = 'DEPLOY'
 
     # Load config
-    app.config.from_object("config." + modes[mode])
+    app.config.from_object("src.config." + modes[mode])
     app.app_context().push()
 
     # Initialization of .db, JWT & loginManager
