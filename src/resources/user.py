@@ -1,6 +1,8 @@
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
+from os import listdir
+from os.path import join
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
                                 get_jwt,
@@ -81,8 +83,7 @@ def profile(username):
 
     :param username: String with current user.
     """
-    if username == 'None':   # TODO: bug: "GET /profile/None HTTP/1.1" 200
-        username = current_user.username
+    # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: meme
     # TODO: favorites
     user_ = UserModel.find_by_username(username)
@@ -152,7 +153,7 @@ def delete_account(user_id):
 @user.route('/edit_profile/<user_id>', methods=["GET", "POST"])
 def edit_profile(user_id):
     """
-    Delete a user from the db.
+    Edit a user.
     """
     user_ = UserModel.find_by_id(user_id)
     if user_ != current_user and current_user.username != 'admin':
@@ -173,3 +174,18 @@ def edit_profile(user_id):
 
         return render_template('user/edit_profile.html', title='Edit Profile',
                                user=user_, form=edit_form)
+
+
+@user.route('/select_avatar', methods=["GET"])
+def select_avatar():
+    """
+    Edit the user's avatar.
+    """
+    # Default url on owncloud
+    avatars = [
+        f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
+        f'/download?path=%2F&files={i}.png'
+        for i in range(1, 21)]
+
+    return render_template('user/select_avatar.html', avatars=avatars,
+                           title='Choose Avatar')

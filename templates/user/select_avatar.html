@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block content %}
+    <h1> Select your Avatar!</h1>
+
+    {% for avatar in avatars %}
+        <div>
+            <img src="{{avatar}}" alt="" width="100" height="100">
+        </div>
+
+    {% endfor %}
+
+{% endblock %}

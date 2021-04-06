@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/src/logs" />
-      <excludeFolder url="file://$MODULE_DIR$/static/images/test_images" />
+      <excludeFolder url="file://$MODULE_DIR$/static/images/avatars" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

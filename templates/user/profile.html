@@ -3,10 +3,16 @@
 {% from "form-helper.html" import displayField %}
 
 {% block content %}
-    <img src="{{user.img_url}}" alt="">
+
     <h1> This is your Profile, {{ user.username }}!</h1>
     <div>
-        <img src="{{ user.img_url }}" onerror="this.src='https://image.flaticon.com/icons/png/128/1023/1023656.png'"/>
+    
+        {% if user.img_url == None %}
+            <img src="s"  alt="Profile Pic"/>
+        {% else %}
+            <img src="{{ user.img_url }}"  alt="Profile Pic"/>
+        {% endif %}
+        
     </div>
     <div>
     {% if user.username == current_user.username or current_user.username == 'admin' %}
