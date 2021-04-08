@@ -1,27 +1,36 @@
+from datetime import datetime
 from src.db import db
 
 
 class MemeModel(db.Model):
-    __tablename__ = 'meme'
+    __tablename__ = 'memes'
 
+    id = db.Column(db.Integer, primary_key=True)
     meme_name = db.Column(db.String(80), nullable=False)
-    img_url = db.Column(db.String(80))
-    owner = db.Column(db.String(80))
-    genre = db.Column(db.String(80))
+    img_url = db.Column(db.String(255))
+    genre = db.Column(db.Integer)
     info = db.Column(db.Text(200))
-    favorite = db.Column(db.String(80))
     likes = db.Column(db.Integer)
+    upload_date = db.Column(db.DateTime)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Foreign key to link items & stores
-    user = db.relationship('UserModel')  # Now no joins necessary
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    fav_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    like_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, meme_name, img_url, owner, genre=None, info=None,
-                 favorite=None, likes=None, user_id=user_id, user=user):
-        self.meme_name = meme_name
-        self.img_url = img_url
-        self.owner = owner
-        self.user_id = user_id
-        self.user = user
+    # user = db.relationship('UserModel', backref='mememodel', foreign_keys=[owner_id, fav_by_id, like_by_id])
+
+    #owner = db.relationship('UserModel', foreign_keys=[owner_id])
+    #fav_by = db.relationship('UserModel', foreign_keys=[fav_by_id])
+    #like_by = db.relationship('UserModel', foreign_keys=[like_by_id])
+
+    def __init__(self, meme_name, owner_id):
+        self.meme_name = "meme_name"
+        self.owner_id = owner_id
+        self.img_url = "img_url"
+        self.genre = 1
+        self.info = "info"
+        self.likes = 0
+        self.upload_date = datetime.utcnow()
 
     @classmethod
     def find_by_name(cls, name: str) -> object:

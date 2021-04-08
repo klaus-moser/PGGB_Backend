@@ -80,6 +80,7 @@ class LoginForm(FlaskForm):
     """
     This is the form class for the '/login' endpoint.
     """
+
     def validate_credentials(self, field: PasswordField) -> None:
         """
         Check the credentials from the LoginForm.
@@ -145,3 +146,20 @@ class EditProfileForm(FlaskForm):
         """
         if UserModel.find_by_email(email=email.data):
             raise ValidationError("A email '{}' already exists!".format(email.data))
+
+
+class UploadMemeForm(FlaskForm):
+    """
+    This is the form class for the '/upload_meme' endpoint.
+    """
+    meme_name_label = StringField('meme_name_label', validators=[
+        InputRequired(message='Name required!'),
+        Length(min=4, max=80, message='Name must be between 4-80 characters!')])
+
+    genre_label = StringField('genre_label', validators=[
+        Length(max=80)])
+
+    info_label = PasswordField('info_label', validators=[
+        Length(max=200)])
+
+    submit_button = SubmitField('Upload')

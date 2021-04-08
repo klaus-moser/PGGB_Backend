@@ -10,6 +10,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\src\models\meme.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\src\models\user.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\src\resources\index.py">
           <value>
             <Attribute>

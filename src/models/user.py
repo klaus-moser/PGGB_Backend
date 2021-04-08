@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_login import UserMixin
 
 from src.db import db
@@ -11,16 +12,16 @@ class UserModel(db.Model, UserMixin):
     email = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(80))
     img_url = db.Column(db.String(255))
+    register_date = db.Column(db.DateTime)
 
-    # List of UserModels; many-to-1 rel. (Back reference)
-    # lazy: to not create an UserModel for each item yet
-    items = db.relationship('MemeModel', lazy='dynamic')  # self.items is no list anymore but a query builder -> .all()
+    #memes = db.relationship('MemeModel', lazy=True)
 
     def __init__(self, username, email, hashed_password, img_url=None):
         self.username = username
         self.email = email
         self.password = hashed_password
         self.img_url = img_url
+        self.register_date = datetime.utcnow()
 
     def json(self) -> dict:
         """
