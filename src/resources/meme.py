@@ -23,8 +23,13 @@ def upload():
     upload_form = UploadMemeForm()
 
     if upload_form.validate_on_submit():
-        meme_ = MemeModel(upload_form.meme_name_label.data, current_user.id)
+        meme_ = MemeModel(current_user.id,
+                          upload_form.meme_name_label.data,
+                          upload_form.genre_label.data,
+                          upload_form.info_label.data)
         meme_.save_to_db()
-        return redirect(url_for('main.gallery'))
+
+        meme_.upload_image(upload_form.img_url.data, current_user, meme_.id)
+        return redirect(url_for('user.profile', username=current_user.username))
 
     return render_template('meme/upload.html', form=upload_form)

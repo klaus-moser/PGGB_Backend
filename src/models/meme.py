@@ -1,4 +1,6 @@
 from datetime import datetime
+from owncloud import Client
+
 from src.db import db
 
 
@@ -17,20 +19,39 @@ class MemeModel(db.Model):
     fav_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     like_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+    # TODO: check????
     # user = db.relationship('UserModel', backref='mememodel', foreign_keys=[owner_id, fav_by_id, like_by_id])
+    # TODO: check????
+    owner = db.relationship('UserModel', foreign_keys=[owner_id])
+    fav_by = db.relationship('UserModel', foreign_keys=[fav_by_id])
+    like_by = db.relationship('UserModel', foreign_keys=[like_by_id])
 
-    #owner = db.relationship('UserModel', foreign_keys=[owner_id])
-    #fav_by = db.relationship('UserModel', foreign_keys=[fav_by_id])
-    #like_by = db.relationship('UserModel', foreign_keys=[like_by_id])
-
-    def __init__(self, meme_name, owner_id):
-        self.meme_name = "meme_name"
+    def __init__(self, owner_id, meme_name, genre=None, info=None):
         self.owner_id = owner_id
-        self.img_url = "img_url"
-        self.genre = 1
-        self.info = "info"
-        self.likes = 0
-        self.upload_date = datetime.utcnow()
+        self.meme_name = meme_name
+        self.genre = genre
+        self.info = info
+        self.upload_date = datetime.utcnow()  # TODO: wrong timestamp
+
+    def upload_image(self, *args):
+        ...
+        print(args)
+        # oc_client = Client()
+        # TODO:
+        """
+        import owncloud
+
+        oc = owncloud.Client('http://domain.tld/owncloud')
+        
+        oc.login('user', 'password')
+        
+        oc.mkdir('testdir')
+        
+        oc.put_file('testdir/remotefile.txt', 'localfile.txt')
+        
+        link_info = oc.share_file_with_link('testdir/remotefile.txt')
+        """
+
 
     @classmethod
     def find_by_name(cls, name: str) -> object:

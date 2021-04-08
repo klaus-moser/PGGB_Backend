@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileRequired, FileAllowed
 from passlib.handlers.pbkdf2 import pbkdf2_sha256
-from wtforms import StringField, PasswordField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 
 from src.models.user import UserModel
@@ -154,12 +155,14 @@ class UploadMemeForm(FlaskForm):
     """
     meme_name_label = StringField('meme_name_label', validators=[
         InputRequired(message='Name required!'),
-        Length(min=4, max=80, message='Name must be between 4-80 characters!')])
+        Length(min=1, max=80, message='Name must be between 1-80 characters!')])
 
     genre_label = StringField('genre_label', validators=[
         Length(max=80)])
 
-    info_label = PasswordField('info_label', validators=[
-        Length(max=200)])
+    info_label = TextAreaField('info_label', validators=[
+        Length(max=255)])
+
+    img_url = FileField("img_label", validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png'])])
 
     submit_button = SubmitField('Upload')

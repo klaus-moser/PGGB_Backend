@@ -7,13 +7,14 @@
 {% block content %}
     <h1> Upload Meme </h1>
 
-    <form action="{{ url_for('meme.upload') }}" method="POST">
+    <form action="{{ url_for('meme.upload') }}" method="POST" enctype="multipart/form-data" novalidate>
 
         <div>
             {% if current_user.is_authenticated %}
             {{ displayField(form.meme_name_label, 'Name', autofocus=true) }}
             {{ displayField(form.genre_label, 'Genre') }}
             {{ displayField(form.info_label, 'Info') }}
+            {{ displayField(form.img_url, 'Meme') }}
             {% endif %}
         </div>
 
