@@ -1,5 +1,6 @@
 from datetime import datetime
-from owncloud import Client
+from owncloud import Client, ResponseError
+
 
 from src.db import db
 
@@ -26,32 +27,28 @@ class MemeModel(db.Model):
     fav_by = db.relationship('UserModel', foreign_keys=[fav_by_id])
     like_by = db.relationship('UserModel', foreign_keys=[like_by_id])
 
-    def __init__(self, owner_id, meme_name, genre=None, info=None):
+    def __init__(self, owner_id, img_url, meme_name, genre=None, info=None):
         self.owner_id = owner_id
+        self.img_url = img_url
         self.meme_name = meme_name
         self.genre = genre
         self.info = info
         self.upload_date = datetime.utcnow()  # TODO: wrong timestamp
 
-    def upload_image(self, *args):
-        ...
-        print(args)
-        # oc_client = Client()
-        # TODO:
+    def upload_image(self, file_path: str) -> None:
         """
-        import owncloud
+        Upload image to ownCLoud shared folder
 
-        oc = owncloud.Client('http://domain.tld/owncloud')
-        
-        oc.login('user', 'password')
-        
-        oc.mkdir('testdir')
-        
-        oc.put_file('testdir/remotefile.txt', 'localfile.txt')
-        
-        link_info = oc.share_file_with_link('testdir/remotefile.txt')
+        :param file_path: String of the file in /upload/
         """
+        # TODO: ssl certificate
+        pub_link = f'https://picloudserver.selfhost.co/index.php/s/TTxUVZdyxeuQ8h9'
 
+        try:
+            oc = Client.from_public_link(pub_link)
+            oc.drop_file(file_name=file_path)
+        except Exception as err:
+            raise ResponseError("Error during upload", errorType=err) from err
 
     @classmethod
     def find_by_name(cls, name: str) -> object:
