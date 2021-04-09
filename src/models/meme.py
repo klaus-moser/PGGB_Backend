@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 from owncloud import Client, ResponseError
 
 from src.db import db
@@ -13,18 +14,19 @@ class MemeModel(db.Model):
     genre = db.Column(db.Integer)
     info = db.Column(db.Text(200))
     likes = db.Column(db.Integer)
-    upload_date = db.Column(db.DateTime)
+    upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    fav_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    like_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    # TODO:
+    # users = db.relationship('UserModel', lazy=True, foreign_keys=[id])
+    # users = db.relationship('UserModel')
 
-    # TODO: check????
-    # user = db.relationship('UserModel', backref='mememodel', foreign_keys=[owner_id, fav_by_id, like_by_id])
-    # TODO: check????
-    owner = db.relationship('UserModel', foreign_keys=[owner_id])
-    fav_by = db.relationship('UserModel', foreign_keys=[fav_by_id])
-    like_by = db.relationship('UserModel', foreign_keys=[like_by_id])
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
+    # fav_by_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
+    # like_by_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete="CASCADE"))
+
+    owner = db.relationship('UserModel', back_populates="memes")
+    # fav_by = db.relationship('UserModel', back_populates="children")
+    # like_by = db.relationship('UserModel', back_populates="children")
 
     def __init__(self, owner_id, img_url, meme_name, genre=None, info=None):
         self.owner_id = owner_id
@@ -32,7 +34,6 @@ class MemeModel(db.Model):
         self.meme_name = meme_name
         self.genre = genre
         self.info = info
-        self.upload_date = datetime.utcnow()  # TODO: wrong timestamp
 
     @staticmethod
     def upload_image(file_path: str) -> None:
@@ -52,7 +53,7 @@ class MemeModel(db.Model):
             raise ResponseError("Error during upload", errorType=err) from err
 
     @classmethod
-    def find_by_id(cls, id_: int):
+    def find_by_id(cls, id_: int) -> List["MemeModel"]:
         """
         Find an meme by its name.
 
@@ -62,7 +63,7 @@ class MemeModel(db.Model):
         return cls.query.filter_by(owner_id=id_).all()
 
     @classmethod
-    def find_all(cls):
+    def find_all(cls) -> List["MemeModel"]:
         """
         Returns all memes in .db
         """

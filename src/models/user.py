@@ -12,9 +12,13 @@ class UserModel(db.Model, UserMixin):
     email = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(80))
     img_url = db.Column(db.String(255))
-    register_date = db.Column(db.DateTime)
+    register_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    #memes = db.relationship('MemeModel', lazy=True)
+    memes = db.relationship(
+        "MemeModel", back_populates="owner",
+        cascade="all, delete",
+        passive_deletes=True
+    )
 
     def __init__(self, username, email, hashed_password, img_url=None):
         self.username = username
