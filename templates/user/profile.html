@@ -29,13 +29,19 @@
 
     <div>
     <h2> Your Memes </h2>
-    {% if meme == None %}
+    {% if memes == None %}
         <div>
             <h5> *** No memes uploaded yet *** </h5>
         </div>
         <div>
             <a href=" {{url_for('meme.upload')}} ">Upload a meme</a>
         </div>
+    {% else %}
+        {% for meme in memes %}
+            <div>
+                <img src="{{ meme }}"  alt="" width="200" height="200"/>
+            </div>
+        {% endfor %}
     {% endif %}
     </div>
 

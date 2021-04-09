@@ -52,21 +52,19 @@ class MemeModel(db.Model):
             raise ResponseError("Error during upload", errorType=err) from err
 
     @classmethod
-    def find_by_name(cls, name: str) -> object:
+    def find_by_id(cls, id_: int):
         """
         Find an meme by its name.
 
-        :param name: Meme name to find.
-        :return: Object of Meme-class.
+        :param id_: Meme id_ to find.
+        :return: Objects of Meme-class with id_.
         """
-        return cls.query.filter_by(name=name).first()  # SELECT * FROM items WHERE name=name LIMIT 1
+        return cls.query.filter_by(owner_id=id_).all()
 
     @classmethod
-    def find_all(cls) -> dict:
+    def find_all(cls):
         """
         Returns all memes in .db
-
-        :return: All memes found in .db
         """
         return cls.query.all()
 

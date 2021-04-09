@@ -1,6 +1,7 @@
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
+from os.path import join
 from random import randint
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
@@ -10,6 +11,7 @@ from flask_jwt_extended import (create_access_token,
                                 jwt_required)
 
 from src.models.user import UserModel
+from src.models.meme import MemeModel
 from src.blacklist import BLACKLIST
 from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
 
@@ -89,12 +91,20 @@ def profile(username):
     user_ = UserModel.find_by_username(username)
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
-    # TODO: meme
     # TODO: favorites
+    # TODO: puplic solution
+    pub_link = f'https://picloudserver.selfhost.co/index.php/s/TTxUVZdyxeuQ8h9/download?path=%2F&files='
+
+    meme_models = MemeModel.find_by_id(id_=user_.id)
+    if meme_models:
+        memes = [join(pub_link, meme.img_url) for meme in meme_models]
+    else:
+        memes = None
+
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
                                          user=user_,
-                                         meme=None,
+                                         memes=memes,
                                          favorites=None))
 
 
