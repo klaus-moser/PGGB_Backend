@@ -1,7 +1,6 @@
 from datetime import datetime
 from owncloud import Client, ResponseError
 
-
 from src.db import db
 
 
@@ -35,13 +34,15 @@ class MemeModel(db.Model):
         self.info = info
         self.upload_date = datetime.utcnow()  # TODO: wrong timestamp
 
-    def upload_image(self, file_path: str) -> None:
+    @staticmethod
+    def upload_image(file_path: str) -> None:
         """
         Upload image to ownCLoud shared folder
 
         :param file_path: String of the file in /upload/
         """
         # TODO: ssl certificate
+        # Link to shared folder on ownCLoud
         pub_link = f'https://picloudserver.selfhost.co/index.php/s/TTxUVZdyxeuQ8h9'
 
         try:
