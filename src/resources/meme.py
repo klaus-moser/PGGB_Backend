@@ -33,21 +33,13 @@ def upload():
                           upload_form.info_label.data)
         meme_.save_to_db()
         # TODO: secure_filename
-        filename = upload_form.img_url.data.filename
 
         try:
-            # TODO: UUID to avoid dublicates
-            upload_path = join('static/images/upload/', filename)
-            upload_form.img_url.data.save(upload_path)
-
-            meme_.upload_image(upload_path)
-            remove(upload_path)
+            meme_.upload_image(upload_form.img_url.data, current_user.username, meme_.id)
 
         except Exception:
-            # remove entry from db
             meme_.delete_from_db()
-            remove(upload_path)  # TODO: better solution
-            return redirect(url_for('meme.upload'))
-        return redirect(url_for('user.profile', username=current_user.username))
 
+        finally:
+            return redirect(url_for('user.profile', username=current_user.username))
     return render_template('meme/upload.html', form=upload_form)

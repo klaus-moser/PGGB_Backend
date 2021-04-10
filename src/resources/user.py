@@ -94,7 +94,6 @@ def profile(username):
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: favorites
-    # TODO: puplic solution
     pub_link = environ.get('URL_UPLOADS')
 
     meme_models = MemeModel.find_by_id(id_=user_.id)
@@ -103,6 +102,7 @@ def profile(username):
 
     else:
         memes = None
+    memes = None
 
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",

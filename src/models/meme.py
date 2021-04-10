@@ -1,7 +1,7 @@
 from datetime import datetime
 from os import environ
+from cloudinary import uploader
 from typing import List
-from owncloud import Client, ResponseError
 
 from src.db import db
 
@@ -37,21 +37,17 @@ class MemeModel(db.Model):
         self.info = info
 
     @staticmethod
-    def upload_image(file_path: str) -> None:
-        """
-        Upload image to ownCLoud shared folder
-
-        :param file_path: String of the file in /upload/
-        """
-        # TODO: ssl certificate
-        # Link to shared folder on ownCLoud
-        pub_link = environ.get('URL_UPLOADS_DROP')
+    def upload_image(file_path: str, username: str, pk: int) -> None:
+        # TODO: DOC
+        # Create folder for every user to store memes
+        folder_id = f'user_uploads/{username}/{pk}'
 
         try:
-            oc = Client.from_public_link(pub_link, folder_password=environ.get('PW_OWNCLOUD'))
-            oc.drop_file(file_name=file_path)
+            res = uploader.upload(file_path, public_id=folder_id, overwrite=True)
+            cloud_name = environ.get("CLOUD_NAME")
+            endpoint = f"https://res.cloudinary.com/{cloud_name}/image/upload"
         except Exception as err:
-            raise ResponseError("Error during upload", errorType=err) from err
+            pass  # TODO
 
     @classmethod
     def find_by_id(cls, id_: int) -> List["MemeModel"]:
