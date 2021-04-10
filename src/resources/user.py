@@ -1,7 +1,10 @@
+import requests
+import json
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
 from os.path import join
+from os import environ
 from random import randint
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
@@ -9,11 +12,15 @@ from flask_jwt_extended import (create_access_token,
                                 set_refresh_cookies,
                                 set_access_cookies,
                                 jwt_required)
+from requests.auth import HTTPBasicAuth
 
 from src.models.user import UserModel
 from src.models.meme import MemeModel
 from src.blacklist import BLACKLIST
-from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
+from src.wtform_fields import (RegisterForm,
+                               LoginForm,
+                               DeleteAccountForm,
+                               EditProfileForm)
 
 
 user = Blueprint('user', __name__)
@@ -35,8 +42,7 @@ def register():
         hashed_password = pbkdf2_sha256.hash(password)
 
         # Set a random avatar
-        img_url = (f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
-                   f'/download?path=%2F&files={randint(1, 20)}.png')
+        img_url = (environ.get('URL_AVATAR') + f'{randint(1, 20)}.png')
 
         user_ = UserModel(username, email, hashed_password, img_url)
         user_.save_to_db()
@@ -93,11 +99,12 @@ def profile(username):
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: favorites
     # TODO: puplic solution
-    pub_link = f'https://picloudserver.selfhost.co/index.php/s/TTxUVZdyxeuQ8h9/download?path=%2F&files='
+    pub_link = environ.get('URL_UPLOADS')
 
     meme_models = MemeModel.find_by_id(id_=user_.id)
     if meme_models:
         memes = [join(pub_link, meme.img_url) for meme in meme_models]
+
     else:
         memes = None
 
@@ -153,8 +160,11 @@ def delete_account(user_id):
                 # Save logout user
                 logout_user()
 
-                # Delete all user data
+                # Delete all user data from .db
                 user_.delete_from_db()
+
+                # Delete all user files from ownCloud
+                # TODO: delete all files --> secure folder with pw
 
                 flash("Account deleted!", "success")
                 return redirect(url_for('main.index'))

@@ -46,6 +46,7 @@ def upload():
         except Exception:
             # remove entry from db
             meme_.delete_from_db()
+            remove(upload_path)  # TODO: better solution
             return redirect(url_for('meme.upload'))
         return redirect(url_for('user.profile', username=current_user.username))
 

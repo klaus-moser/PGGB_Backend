@@ -1,4 +1,5 @@
 from datetime import datetime
+from os import environ
 from typing import List
 from owncloud import Client, ResponseError
 
@@ -44,10 +45,10 @@ class MemeModel(db.Model):
         """
         # TODO: ssl certificate
         # Link to shared folder on ownCLoud
-        pub_link = f'https://picloudserver.selfhost.co/index.php/s/TTxUVZdyxeuQ8h9'
+        pub_link = environ.get('URL_UPLOADS_DROP')
 
         try:
-            oc = Client.from_public_link(pub_link)
+            oc = Client.from_public_link(pub_link, folder_password=environ.get('PW_OWNCLOUD'))
             oc.drop_file(file_name=file_path)
         except Exception as err:
             raise ResponseError("Error during upload", errorType=err) from err
