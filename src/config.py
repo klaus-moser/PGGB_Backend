@@ -1,4 +1,5 @@
 from os import environ
+import cloudinary
 from datetime import timedelta
 
 
@@ -42,6 +43,13 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL', 'sqlite:///' + DB_NAME + '.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
+
+    # Cloudinary API Settings
+    cloudinary.config(
+        cloud_name=environ.get("CLOUD_NAME"),
+        api_key=environ.get("CLOUD_API_KEY"),
+        api_secret=environ.get("CLOUD_API_SECRET")
+    )
 
 
 class ProductionConfig(Config):

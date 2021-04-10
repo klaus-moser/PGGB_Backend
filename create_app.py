@@ -31,7 +31,6 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     # Initialization of .db, JWT & loginManager
     db.init_app(app=app)
     jwt = JWTManager(app=app)
-
     login_manager = LoginManager()
     login_manager.init_app(app=app)
 

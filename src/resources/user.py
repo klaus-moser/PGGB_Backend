@@ -1,5 +1,3 @@
-import requests
-import json
 from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
@@ -12,7 +10,6 @@ from flask_jwt_extended import (create_access_token,
                                 set_refresh_cookies,
                                 set_access_cookies,
                                 jwt_required)
-from requests.auth import HTTPBasicAuth
 
 from src.models.user import UserModel
 from src.models.meme import MemeModel
@@ -21,7 +18,6 @@ from src.wtform_fields import (RegisterForm,
                                LoginForm,
                                DeleteAccountForm,
                                EditProfileForm)
-
 
 user = Blueprint('user', __name__)
 
@@ -42,9 +38,9 @@ def register():
         hashed_password = pbkdf2_sha256.hash(password)
 
         # Set a random avatar
-        img_url = (environ.get('URL_AVATAR') + f'{randint(1, 20)}.png')
+        avatar_url = (environ.get('URL_AVATARS') + f'{randint(1, 20)}.png')
 
-        user_ = UserModel(username, email, hashed_password, img_url)
+        user_ = UserModel(username, email, hashed_password, avatar_url)
         user_.save_to_db()
 
         login_user(user_)
@@ -213,11 +209,8 @@ def select_avatar():
         user_.save_to_db()
         return redirect(url_for('user.profile', username=user_.username))
 
-    # Default url on owncloud
-    avatars = [
-        f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
-        f'/download?path=%2F&files={i}.png'
-        for i in range(1, 21)]
+    # Avatar urls
+    avatars = [environ.get('URL_AVATARS') + f'{i}.png' for i in range(1, 21)]
 
     return render_template('user/select_avatar.html', avatars=avatars,
                            title='Choose Avatar')
