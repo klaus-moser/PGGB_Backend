@@ -6,7 +6,7 @@
 - With this app it is possible to collect, like, comment as well as upload your favourite meme(s)
 - Important: This app/project is currently under construction! For more informations see project-branches
 
-### !!! More information (Table of contents, mockups, code, information about frameworks etc.) comeing soon!!!
+#### *!!! More information (Table of contents, mockups, code, information about frameworks etc.) comeing soon!!!*
 
 
 ## Wireframes
@@ -33,7 +33,7 @@ https://pan-galactic-gargle-blaster.de
 
 ## Table of Contents
 
-__*** TODO ***_
+__*** TODO ***__
 
 ## Features
 
@@ -77,7 +77,7 @@ __*** TODO ***__
 
 __*** TODO ***__
 
-## !!! More information (Table of contents, mockups, code & .db schmese, information about frameworks etc.) comeing soon!!!
+#### *!!! More information (Table of contents, mockups, code & .db schmese, information about frameworks etc.) comeing soon!!!*
 
 
 
