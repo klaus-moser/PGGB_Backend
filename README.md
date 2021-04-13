@@ -37,29 +37,80 @@ __*** TODO ***__
 
 ## Features
 
-__*** TODO ***__
+__*** IN PROGRESS ***__
 
-## User stories
+#### `/register`
+* Register with a given formular
+* Set Username, email, password, confirm password
+* --> /gallery
+* --> /contact
+* --> /login
 
-a) Non-registered Visitor
+#### `/contact`
+* Logged in:  Type message & send
+* Logged out: Put in email, type message & send
+* --> /contact
+* --> /login
 
-* See the main page with all memes (blast, new, last) and sort them
-* Read the comments, see the likes
-* Can contact site owner
+#### `/`
+* Landing page for unregistered & out logged users
+* --> /register
+* --> /login
+* --> /contact
 
-b) Registered User
+#### `/login`
+* Login into existing account
+* --> /register
+* --> /contact
 
-* Login, logout
-* Profile page with all own and favourite memes
-* Editable username, email & avatar
-* Upload, comment, like, save memes
-* Delete (own) memes
-* Delete (own) profile
-* Contact staff
+#### `/gallery`
+* Main page
+* Shows a selection of memes
+* Sort memes for blast, new, last
+* Scroll through all memes
+* Select meme & goto page
+* --> /logout
+* --> /profile/<username>
+* --> /meme/<memename>
+* --> /contact
 
-c) Owner
+#### `/upload`
+* Upload a new meme connected to the <user> account
+* Give <memename>, select <genre>, write <infotext>
+* --> /gallery
 
-* Almighty to edit, delete or contact users or memes 
+#### `/meme/<memename>`
+* Watch the meme page & all its infos
+* Owner: Edit <memename>, <genre> & <infotext>, delete meme
+* Logged in: Watch all meme infos, make comments, likes & fav
+* Logged out: Only watch all meme infos, comments, likes, favs
+* --> /gallery
+* --> /logout
+* --> /contact
+
+#### `/profile/<username>`
+* Watch all infos of user
+* Watch all own & fav memes
+* --> /gallery
+* --> /logout
+* --> /contact
+
+#### `/edit_profile/<username>`
+* Edit email, username & password
+* Watch all own & fav memes
+* Edit & delete own memes
+* Edit Avatar
+* --> /gallery
+* --> /logout
+* --> /contact
+
+#### `/delete_account/<username>`
+* Delete user
+* --> /gallery
+
+## User storie
+
+![PGGB_uses_cases_wb](https://user-images.githubusercontent.com/60796711/114630927-e8979e00-9cbb-11eb-9145-ed98b7677eaf.png)
 
 ## Database Models & Schema
 
