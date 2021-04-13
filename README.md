@@ -1,12 +1,12 @@
 # Pan-Galactic-Gargle-Blaster
 
-## Project Summery
+## Summery
 
 - This is a project to improve my skills to write a fully functioning backend using Python, FLask, SQLite and CSS & Javascript
 - With this app it is possible to collect, like, comment as well as upload your favourite meme(s)
 - Important: This app/project is currently under construction! For more informations see project-branches
 
-## !!! More information (Table of contents, mockups, code, information about frameworks etc.) comeing soon!!!
+### !!! More information (Table of contents, mockups, code, information about frameworks etc.) comeing soon!!!
 
 
 ## Wireframes
@@ -27,7 +27,57 @@
 
 ![VIII  Contact](https://user-images.githubusercontent.com/60796711/114477672-defb3100-9bfc-11eb-8e52-c333d7a8e754.png)
 
+## Website
 
+https://pan-galactic-gargle-blaster.de
+
+## Table of Contents
+
+__*** TODO ***_
+
+## Features
+
+__*** TODO ***__
+
+## User stories
+
+a) Non-registered Visitor
+
+* See the main page with all memes (blast, new, last) and sort them
+* Read the comments, see the likes
+* Can contact site owner
+
+b) Registered User
+
+* Login, logout
+* Profile page with all own and favourite memes
+* Editable username, email & avatar
+* Upload, comment, like, save memes
+* Delete (own) memes
+* Delete (own) profile
+* Contact staff
+
+c) Owner
+
+* Almighty to edit, delete or contact users or memes 
+
+## Database Models & Schema
+
+__*** TODO ***__
+
+## Frontent
+
+__*** TODO ***__
+
+## Technologies & Frameworks
+
+__*** TODO ***__
+
+## Credits
+
+__*** TODO ***__
 
 ## !!! More information (Table of contents, mockups, code & .db schmese, information about frameworks etc.) comeing soon!!!
-## *** STAY TUNED ***
+
+
+
