@@ -36,10 +36,9 @@ def upload():
 
         try:
             meme_.upload_image(upload_form.img_url.data, current_user.username, meme_.id)
-
         except Exception:
             meme_.delete_from_db()
-
         finally:
             return redirect(url_for('user.profile', username=current_user.username))
+
     return render_template('meme/upload.html', form=upload_form)

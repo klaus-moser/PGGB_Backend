@@ -1,7 +1,7 @@
-from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
+from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
-from os.path import join
+from cloudinary.utils import cloudinary_url
 from os import environ
 from random import randint
 from flask_jwt_extended import (create_access_token,
@@ -64,7 +64,6 @@ def login():
         if user_ and pbkdf2_sha256.verify(login_form.password.data, user_.password):
             # Login
             login_user(user=user_)
-            flash(f"Welcome back, {user_.username}!", "success")
 
             # create access & refresh token + save user.id in that token
             access_token = create_access_token(identity=user_.id, fresh=True)
@@ -76,7 +75,6 @@ def login():
             return response
 
         # User unknown or wrong password
-        flash('Invalid username or password', 'error')
         return redirect(url_for('user.login'))
     # Get
     headers = {'Content-Type': 'text/html'}
@@ -94,15 +92,16 @@ def profile(username):
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: favorites
-    pub_link = environ.get('URL_UPLOADS')
 
     meme_models = MemeModel.find_by_id(id_=user_.id)
     if meme_models:
-        memes = [join(pub_link, meme.img_url) for meme in meme_models]
-
+    # TODO: Version number
+    # TODO: DO SAMMA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # memes = [meme.img_url for meme in meme_models]
+        folder = f'v1/user_uploads/{username}/' + meme_models[0].img_url
+        memes = cloudinary_url(folder)
     else:
         memes = None
-    memes = None
 
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
@@ -121,7 +120,6 @@ def logout():  # TODO: logout -> POST not GET!
     BLACKLIST.add(jti)
 
     logout_user()
-    flash("Logged out!", "success")
     return redirect(url_for('main.index'))
 
 
@@ -141,14 +139,12 @@ def delete_account(user_id):
     user_ = UserModel.find_by_id(id_=user_id)
 
     if user_ != current_user and current_user != 'admin':
-        flash("You cannot delete this users profile!", "failure")
         redirect(url_for('main.gallery'))
 
     delete_form = DeleteAccountForm()
     if delete_form.validate_on_submit():
 
         if not pbkdf2_sha256.verify(delete_form.password.data, user_.password):
-            flash('Invalid Password', 'error')
             return redirect(url_for('user.profile', username=user_.username))
 
         else:
@@ -161,8 +157,6 @@ def delete_account(user_id):
 
                 # Delete all user files from ownCloud
                 # TODO: delete all files --> secure folder with pw
-
-                flash("Account deleted!", "success")
                 return redirect(url_for('main.index'))
 
     return make_response(render_template('user/delete_account.html',

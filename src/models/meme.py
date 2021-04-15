@@ -37,15 +37,16 @@ class MemeModel(db.Model):
         self.info = info
 
     @staticmethod
-    def upload_image(file_path: str, username: str, pk: int) -> None:
+    def upload_image(image: str, username: str, pk: int) -> None:
         # TODO: DOC
         # Create folder for every user to store memes
         folder_id = f'user_uploads/{username}/{pk}'
 
         try:
-            res = uploader.upload(file_path, public_id=folder_id, overwrite=True)
-            cloud_name = environ.get("CLOUD_NAME")
-            endpoint = f"https://res.cloudinary.com/{cloud_name}/image/upload"
+            res = uploader.upload(image, public_id=folder_id, overwrite=True)
+            cloud_name = environ.get('CLOUD_NAME')
+            endpoint = environ.get('CLOUD_ENDPOINT')
+
         except Exception as err:
             pass  # TODO
 
