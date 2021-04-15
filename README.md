@@ -42,26 +42,16 @@ __*** IN PROGRESS ***__
 #### `/register`
 * Register with a given formular
 * Set Username, email, password, confirm password
-* --> /gallery
-* --> /contact
-* --> /login
 
 #### `/contact`
 * Logged in:  Type message & send
 * Logged out: Put in email, type message & send
-* --> /contact
-* --> /login
 
 #### `/`
 * Landing page for unregistered & out logged users
-* --> /register
-* --> /login
-* --> /contact
 
 #### `/login`
 * Login into existing account
-* --> /register
-* --> /contact
 
 #### `/gallery`
 * Main page
@@ -69,44 +59,29 @@ __*** IN PROGRESS ***__
 * Sort memes for blast, new, last
 * Scroll through all memes
 * Select meme & goto page
-* --> /logout
-* --> /profile/<username>
-* --> /meme/<memename>
-* --> /contact
 
 #### `/upload`
 * Upload a new meme connected to the <user> account
 * Give <memename>, select <genre>, write <infotext>
-* --> /gallery
 
 #### `/meme/<memename>`
 * Watch the meme page & all its infos
 * Owner: Edit <memename>, <genre> & <infotext>, delete meme
 * Logged in: Watch all meme infos, make comments, likes & fav
 * Logged out: Only watch all meme infos, comments, likes, favs
-* --> /gallery
-* --> /logout
-* --> /contact
 
 #### `/profile/<username>`
 * Watch all infos of user
 * Watch all own & fav memes
-* --> /gallery
-* --> /logout
-* --> /contact
 
 #### `/edit_profile/<username>`
 * Edit email, username & password
 * Watch all own & fav memes
 * Edit & delete own memes
 * Edit Avatar
-* --> /gallery
-* --> /logout
-* --> /contact
 
 #### `/delete_account/<username>`
 * Delete user
-* --> /gallery
 
 ## User storie
 
