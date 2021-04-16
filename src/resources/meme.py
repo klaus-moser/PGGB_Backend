@@ -14,11 +14,11 @@ from src.models.meme import MemeModel
 meme = Blueprint('meme', __name__)
 
 
-@meme.route('/meme_page')
+@meme.route('/meme_page', methods=["GET"])
 def meme_page():
     ...
     # TODO:
-    return "Hello world"
+    return "Hello World "
 
 
 @meme.route('/upload', methods=["POST", "GET"])
@@ -41,8 +41,7 @@ def upload():
         meme_ = MemeModel(current_user.id,
                           file_name,
                           upload_form.meme_name_label.data,
-                          upload_form.genre_label.data,
-                          upload_form.info_label.data)
+                          upload_form.genre_label.data)
 
         try:
             meme_.save_to_cloud(upload_form.img_url.data, current_user.username, int(uuid4()))

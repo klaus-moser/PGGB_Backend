@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% from "form-helper.html" import displayField %}
+
+{% block content %}
+
+    <!-- Meme Page -->
+    <div>
+        <h1> Meme </h1>
+        <!-- Main Picture -->
+        <div>
+            <img src="{{meme.img_url}}" alt="A picture of {{meme.meme_name}}">
+            <a href="{{meme.img_url}}" target="_blank" rel=”noreferrer”>Full-size image </a>
+        </div>
+    </div>
+
+{% endblock %}
