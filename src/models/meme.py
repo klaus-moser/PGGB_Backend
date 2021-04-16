@@ -36,16 +36,21 @@ class MemeModel(db.Model):
         self.genre = genre
         self.info = info
 
-    @staticmethod
-    def upload_image(image: str, username: str, pk: int) -> None:
+    def upload_image(self, image: str, username: str, pk: int) -> None:
         # TODO: DOC
         # Create folder for every user to store memes
-        folder_id = f'user_uploads/{username}/{pk}'
+        pub_id = f'user_uploads/{username}/{pk}'
 
         try:
-            res = uploader.upload(image, public_id=folder_id, overwrite=True)
-            cloud_name = environ.get('CLOUD_NAME')
+            res = uploader.upload(image, public_id=pub_id, overwrite=True)
+
             endpoint = environ.get('CLOUD_ENDPOINT')
+            version = f"/v{res['version']}/"
+            pub_id = res['public_id']
+            image_format = res['format']
+
+            # Update image url
+            self.img_url = f"{endpoint}{version}{pub_id}.{image_format}"
 
         except Exception as err:
             pass  # TODO
@@ -53,10 +58,10 @@ class MemeModel(db.Model):
     @classmethod
     def find_by_id(cls, id_: int) -> List["MemeModel"]:
         """
-        Find an meme by its name.
+        Find an meme by its owner id.
 
-        :param id_: Meme id_ to find.
-        :return: Objects of Meme-class with id_.
+        :param id_: Owner id_ to find.
+        :return: Objects of Meme-class with owner id_.
         """
         return cls.query.filter_by(owner_id=id_).all()
 
@@ -80,3 +85,7 @@ class MemeModel(db.Model):
         """
         db.session.delete(self)
         db.session.commit()
+
+    def delete_from_cloud(self):
+        ...
+        # TODO

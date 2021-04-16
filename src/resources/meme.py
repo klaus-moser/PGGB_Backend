@@ -31,13 +31,16 @@ def upload():
                           upload_form.meme_name_label.data,
                           upload_form.genre_label.data,
                           upload_form.info_label.data)
-        meme_.save_to_db()
+        # meme_.save_to_db()
         # TODO: secure_filename
 
         try:
             meme_.upload_image(upload_form.img_url.data, current_user.username, meme_.id)
+            meme_.save_to_db()
+
         except Exception:
             meme_.delete_from_db()
+
         finally:
             return redirect(url_for('user.profile', username=current_user.username))
 

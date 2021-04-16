@@ -94,12 +94,11 @@ def profile(username):
     # TODO: favorites
 
     meme_models = MemeModel.find_by_id(id_=user_.id)
+
     if meme_models:
-    # TODO: Version number
-    # TODO: DO SAMMA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        # memes = [meme.img_url for meme in meme_models]
-        folder = f'v1/user_uploads/{username}/' + meme_models[0].img_url
-        memes = cloudinary_url(folder)
+        memes = [meme.img_url for meme in meme_models]
+        #folder = f'v1/user_uploads/{username}/' + meme_models[0].img_url
+        #memes = cloudinary_url(folder)
     else:
         memes = None
 
