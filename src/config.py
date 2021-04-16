@@ -1,4 +1,5 @@
 from os import environ
+import cloudinary
 from datetime import timedelta
 
 
@@ -10,23 +11,26 @@ modes: dict = {'PRODUCTION': 'ProductionConfig',
 class Config(object):
     """
     Default configuration.
+    'python-dotenv' is used to read the key-value pairs from a .env file
+    and set them as environment variables.
+    The file '.env.example' shows all variables that are needed.
     """
     ADMIN: int = 1
 
     ENV = 'production'
     DEBUG = False
     TESTING = False
-    SECRET_KEY = "B\xb2?.\xdf\x9f\xa7m\xf8\x8a%,\xf7\xc4\xfa\x91"  # TODO: *** Change ***
+    SECRET_KEY = environ.get('SECRET_KEY')
 
     DB_NAME = "production-db"
-    DB_USERNAME = "foo"  # TODO: *** Change ***
-    DB_PASSWORD = "bar"  # TODO: *** Change ***
+    DB_USERNAME = environ.get('DB_USERNAME')
+    DB_PASSWORD = environ.get('DB_PASSWORD')
 
     FLASK_SERVER_NAME = 'localhost:5000'
     FLASK_THREADED = True
     SESSION_COOKIE_SECURE = True
 
-    JWT_SECRET_KEY = "B\xb2?.\xdf\x9f\xa7m\xf8\x8a%,\xf7\xc4\xfa\x91"  # TODO: *** Change ***
+    JWT_SECRET_KEY = environ.get('JWT_SECRET_KEY')
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     JWT_TOKEN_LOCATION = ['cookies']
@@ -39,6 +43,13 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = environ.get('DATABASE_URL', 'sqlite:///' + DB_NAME + '.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
+
+    # Cloudinary API Settings
+    cloudinary.config(
+        cloud_name=environ.get("CLOUD_NAME"),
+        api_key=environ.get("CLOUD_API_KEY"),
+        api_secret=environ.get("CLOUD_API_SECRET")
+    )
 
 
 class ProductionConfig(Config):

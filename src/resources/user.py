@@ -1,6 +1,7 @@
-from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
+from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
+from os import environ
 from random import randint
 from flask_jwt_extended import (create_access_token,
                                 create_refresh_token,
@@ -10,9 +11,12 @@ from flask_jwt_extended import (create_access_token,
                                 jwt_required)
 
 from src.models.user import UserModel
+from src.models.meme import MemeModel
 from src.blacklist import BLACKLIST
-from src.wtform_fields import RegisterForm, LoginForm, DeleteAccountForm, EditProfileForm
-
+from src.wtform_fields import (RegisterForm,
+                               LoginForm,
+                               DeleteAccountForm,
+                               EditProfileForm)
 
 user = Blueprint('user', __name__)
 
@@ -33,10 +37,9 @@ def register():
         hashed_password = pbkdf2_sha256.hash(password)
 
         # Set a random avatar
-        img_url = (f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
-                   f'/download?path=%2F&files={randint(1, 20)}.png')
+        avatar_url = (environ.get('URL_AVATARS') + f'{randint(1, 20)}.png')
 
-        user_ = UserModel(username, email, hashed_password, img_url)
+        user_ = UserModel(username, email, hashed_password, avatar_url)
         user_.save_to_db()
 
         login_user(user_)
@@ -60,7 +63,6 @@ def login():
         if user_ and pbkdf2_sha256.verify(login_form.password.data, user_.password):
             # Login
             login_user(user=user_)
-            flash(f"Welcome back, {user_.username}!", "success")
 
             # create access & refresh token + save user.id in that token
             access_token = create_access_token(identity=user_.id, fresh=True)
@@ -72,7 +74,6 @@ def login():
             return response
 
         # User unknown or wrong password
-        flash('Invalid username or password', 'error')
         return redirect(url_for('user.login'))
     # Get
     headers = {'Content-Type': 'text/html'}
@@ -80,7 +81,7 @@ def login():
 
 
 @user.route('/profile/<username>', methods=["GET"])
-def profile(username):
+def profile(username: str):
     """
     Show user profile.
 
@@ -89,12 +90,19 @@ def profile(username):
     user_ = UserModel.find_by_username(username)
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
-    # TODO: meme
     # TODO: favorites
+
+    meme_models = MemeModel.find_all_by_id(id_=user_.id)
+
+    if meme_models:
+        memes = [meme.img_url for meme in meme_models]
+    else:
+        memes = None
+
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
                                          user=user_,
-                                         meme=None,
+                                         memes=memes,
                                          favorites=None))
 
 
@@ -108,7 +116,6 @@ def logout():  # TODO: logout -> POST not GET!
     BLACKLIST.add(jti)
 
     logout_user()
-    flash("Logged out!", "success")
     return redirect(url_for('main.index'))
 
 
@@ -124,18 +131,17 @@ def reset_password():  # TODO
 def delete_account(user_id):
     """
     Delete a user from the db.
+    This also deletes all user memes on the cloud!
     """
     user_ = UserModel.find_by_id(id_=user_id)
 
     if user_ != current_user and current_user != 'admin':
-        flash("You cannot delete this users profile!", "failure")
         redirect(url_for('main.gallery'))
 
     delete_form = DeleteAccountForm()
     if delete_form.validate_on_submit():
 
         if not pbkdf2_sha256.verify(delete_form.password.data, user_.password):
-            flash('Invalid Password', 'error')
             return redirect(url_for('user.profile', username=user_.username))
 
         else:
@@ -143,10 +149,17 @@ def delete_account(user_id):
                 # Save logout user
                 logout_user()
 
-                # Delete all user data
+                # Delete all memes from cloud
+                memes = MemeModel.find_all_by_id(user_id)
+                for meme in memes:
+                    meme.delete_meme_from_cloud()
+
+                # Delete empty user-folder from cloud
+                MemeModel.delete_folder_from_cloud(username=user_.username)
+
+                # Delete all user data from .db
                 user_.delete_from_db()
 
-                flash("Account deleted!", "success")
                 return redirect(url_for('main.index'))
 
     return make_response(render_template('user/delete_account.html',
@@ -193,11 +206,8 @@ def select_avatar():
         user_.save_to_db()
         return redirect(url_for('user.profile', username=user_.username))
 
-    # Default url on owncloud
-    avatars = [
-        f'https://picloudserver.selfhost.co/index.php/s/djGyY9FpQ3RaezL'
-        f'/download?path=%2F&files={i}.png'
-        for i in range(1, 21)]
+    # Avatar urls
+    avatars = [environ.get('URL_AVATARS') + f'{i}.png' for i in range(1, 21)]
 
     return render_template('user/select_avatar.html', avatars=avatars,
                            title='Choose Avatar')

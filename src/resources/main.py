@@ -1,4 +1,4 @@
-from flask import render_template, make_response, redirect, url_for, flash, Blueprint, request
+from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import current_user
 
 from src.wtform_fields import UserContactForm, AnonymContactForm
@@ -39,7 +39,6 @@ def contact():
 
     if contact_form.validate_on_submit():
         # TODO: send_mail
-        flash("Your message has been sent!", "success")
         return redirect(url_for('main.gallery'))
 
     elif request.method == 'GET':
