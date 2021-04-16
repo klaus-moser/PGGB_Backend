@@ -131,6 +131,7 @@ def reset_password():  # TODO
 def delete_account(user_id):
     """
     Delete a user from the db.
+    This also deletes all user memes on the cloud!
     """
     user_ = UserModel.find_by_id(id_=user_id)
 
@@ -152,6 +153,7 @@ def delete_account(user_id):
                 memes = MemeModel.find_all_by_id(user_id)
                 for meme in memes:
                     meme.delete_meme_from_cloud()
+
                 # Delete empty user-folder from cloud
                 MemeModel.delete_folder_from_cloud(username=user_.username)
 

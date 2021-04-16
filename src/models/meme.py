@@ -1,8 +1,7 @@
 from datetime import datetime
 from os import environ
-from cloudinary.api import delete_resources, delete_folder
+from cloudinary.api import delete_folder
 from cloudinary import uploader
-from cloudinary.exceptions import Error
 from typing import List
 
 from src.db import db
@@ -81,7 +80,6 @@ class MemeModel(db.Model):
         :param username: String of username
         :param pk: UUID for avoiding overwriting
         """
-
         # Create folder for every user to store memes
         self.public_id = f'user_uploads/{username}/{pk}'
 
@@ -89,11 +87,10 @@ class MemeModel(db.Model):
 
         endpoint = environ.get('CLOUD_ENDPOINT')
         version = f"/v{res['version']}/"
-        public_id_ = res['public_id']
         image_format = res['format']
 
         # Update image url
-        self.img_url = f"{endpoint}{version}{public_id_}.{image_format}"
+        self.img_url = f"{endpoint}{version}{self.public_id}.{image_format}"
 
     def delete_meme_from_cloud(self) -> None:
         """
