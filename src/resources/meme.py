@@ -33,7 +33,9 @@ def upload():
         # Secure filename
         file = upload_form.img_url.data.filename
         file_name = secure_filename(file)
+
         if not file_name:
+            # If secure_filename returns empty string
             file_name = ''.join(choice(ascii_letters + digits) for _ in range(10)) + Path(file).suffix
 
         meme_ = MemeModel(current_user.id,
@@ -43,8 +45,7 @@ def upload():
                           upload_form.info_label.data)
 
         try:
-            uuid = str(uuid4())
-            meme_.upload_image(upload_form.img_url.data, current_user.username, current_user.id)
+            meme_.save_to_cloud(upload_form.img_url.data, current_user.username, int(uuid4()))
             meme_.save_to_db()
 
         except Error:

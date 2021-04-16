@@ -1,7 +1,6 @@
 from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import login_user, logout_user, current_user
 from passlib.hash import pbkdf2_sha256
-from cloudinary.utils import cloudinary_url
 from os import environ
 from random import randint
 from flask_jwt_extended import (create_access_token,
@@ -93,7 +92,7 @@ def profile(username: str):
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
     # TODO: favorites
 
-    meme_models = MemeModel.find_by_id(id_=user_.id)
+    meme_models = MemeModel.find_all_by_id(id_=user_.id)
 
     if meme_models:
         memes = [meme.img_url for meme in meme_models]
@@ -149,11 +148,16 @@ def delete_account(user_id):
                 # Save logout user
                 logout_user()
 
+                # Delete all memes from cloud
+                memes = MemeModel.find_all_by_id(user_id)
+                for meme in memes:
+                    meme.delete_meme_from_cloud()
+                # Delete empty user-folder from cloud
+                MemeModel.delete_folder_from_cloud(username=user_.username)
+
                 # Delete all user data from .db
                 user_.delete_from_db()
 
-                # Delete all user files from ownCloud
-                # TODO: delete all files --> secure folder with pw
                 return redirect(url_for('main.index'))
 
     return make_response(render_template('user/delete_account.html',
