@@ -1,8 +1,11 @@
+from cloudinary.exceptions import Error
+from string import ascii_letters, digits
+from random import choice
 from flask import Blueprint, redirect, url_for, render_template
 from flask_login import current_user
 from werkzeug.utils import secure_filename
-from os import remove
-from os.path import join
+from uuid import uuid4
+from pathlib import Path
 
 from src.wtform_fields import UploadMemeForm
 from src.models.meme import MemeModel
@@ -26,19 +29,25 @@ def upload():
     upload_form = UploadMemeForm()
 
     if upload_form.validate_on_submit():
+
+        # Secure filename
+        file = upload_form.img_url.data.filename
+        file_name = secure_filename(file)
+        if not file_name:
+            file_name = ''.join(choice(ascii_letters + digits) for _ in range(10)) + Path(file).suffix
+
         meme_ = MemeModel(current_user.id,
-                          upload_form.img_url.data.filename,
+                          file_name,
                           upload_form.meme_name_label.data,
                           upload_form.genre_label.data,
                           upload_form.info_label.data)
-        # meme_.save_to_db()
-        # TODO: secure_filename
 
         try:
-            meme_.upload_image(upload_form.img_url.data, current_user.username, meme_.id)
+            uuid = str(uuid4())
+            meme_.upload_image(upload_form.img_url.data, current_user.username, current_user.id)
             meme_.save_to_db()
 
-        except Exception:
+        except Error:
             meme_.delete_from_db()
 
         finally:

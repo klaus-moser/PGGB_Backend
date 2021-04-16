@@ -82,7 +82,7 @@ def login():
 
 
 @user.route('/profile/<username>', methods=["GET"])
-def profile(username):
+def profile(username: str):
     """
     Show user profile.
 
@@ -97,8 +97,6 @@ def profile(username):
 
     if meme_models:
         memes = [meme.img_url for meme in meme_models]
-        #folder = f'v1/user_uploads/{username}/' + meme_models[0].img_url
-        #memes = cloudinary_url(folder)
     else:
         memes = None
 
