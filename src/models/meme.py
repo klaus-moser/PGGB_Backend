@@ -1,8 +1,8 @@
-from datetime import datetime
-from os import environ
 from cloudinary.api import delete_folder
 from cloudinary import uploader
+from datetime import datetime
 from typing import List
+from os import environ
 
 from src.db import db
 

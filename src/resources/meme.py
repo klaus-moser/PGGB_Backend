@@ -18,7 +18,7 @@ meme = Blueprint('meme', __name__)
 def meme_page():
     ...
     # TODO:
-    return "Hello World "
+    return render_template('meme/meme.html')
 
 
 @meme.route('/upload', methods=["POST", "GET"])

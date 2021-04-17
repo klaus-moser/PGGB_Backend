@@ -2,16 +2,28 @@
 
 {% from "form-helper.html" import displayField %}
 
+{% block head %}
+    <link rel="stylesheet" href="style/carousel.css">
+
+{% endblock %}
+
 {% block content %}
 
-    <!-- Meme Page -->
-    <div>
-        <h1> Meme </h1>
-        <!-- Main Picture -->
-        <div>
-            <img src="{{meme.img_url}}" alt="A picture of {{meme.meme_name}}">
-            <a href="{{meme.img_url}}" target="_blank" rel=”noreferrer”>Full-size image </a>
+    <!-- Cover Flow Page -->
+
+    <div class="gallery">
+        <div class="gallery-container">
+            <img class="gallery-item gallery-item-1" src="images/IMG01.jpg" data-index="1">
+            <img class="gallery-item gallery-item-2" src="images/IMG02.jpg" data-index="2">
+            <img class="gallery-item gallery-item-3" src="images/IMG03.jpg" data-index="3">
+            <img class="gallery-item gallery-item-4" src="images/IMG04.jpg" data-index="4">
+            <img class="gallery-item gallery-item-5" src="images/IMG05.jpg" data-index="5">
         </div>
+        <div class="gallery-controls"></div>
     </div>
+
+    <script src="scripts/carousel.js"></script>
+
+
 
 {% endblock %}
