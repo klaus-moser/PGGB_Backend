@@ -39,7 +39,7 @@
     {% else %}
         {% for meme in memes %}
             <div>
-                <a href=" {{url_for('meme.meme_page')}} " >
+                <a href=" {{url_for('meme.meme_page', selected_meme=meme)}} " >
                     <img src="{{ meme }}" alt="" width="200" height="200"/></a>
             </div>
         {% endfor %}

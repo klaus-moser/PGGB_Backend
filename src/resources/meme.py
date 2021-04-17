@@ -1,7 +1,7 @@
 from cloudinary.exceptions import Error
 from string import ascii_letters, digits
 from random import choice
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, request
 from flask_login import current_user
 from werkzeug.utils import secure_filename
 from uuid import uuid4
@@ -9,7 +9,6 @@ from pathlib import Path
 
 from src.wtform_fields import UploadMemeForm
 from src.models.meme import MemeModel
-from src.models.user import UserModel
 
 
 meme = Blueprint('meme', __name__)
@@ -18,9 +17,15 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     ...
-    # TODO: in progress
+    # TODO: add infos to pictures
     user = current_user
-    memes = [meme_.img_url for meme_ in user.memes]
+
+    # Fetch all user memes + put selected meme in front (middle)
+    selected_meme = request.args.get('selected_meme')
+    memes = [selected_meme]
+    for meme_ in user.memes:
+        if meme_.img_url != selected_meme:
+            memes.append(meme_.img_url)
 
     return render_template('meme/meme.html', memes=memes)
 
