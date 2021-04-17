@@ -215,56 +215,5 @@ fabric.properties
 # Data base
 *.db
 
-templates/hod-dogz.html
-
-static/images/test_images/001-kasa obake.png
-
-static/images/test_images/002-tengu.png
-
-static/images/test_images/003-kappa.png
-
-static/images/test_images/004-tanuki.png
-
-static/images/test_images/005-kitsune.png
-
-static/images/test_images/006-bakeneko.png
-
-static/images/test_images/007-rokurokubi.png
-
-static/images/test_images/008-oni.png
-
-static/images/test_images/009-gashadokuro.png
-
-static/images/test_images/010-hitotsume kozo.png
-
-static/images/test_images/011-akaname.png
-
-static/images/test_images/012-nekomata.png
-
-static/images/test_images/013-onibi.png
-
-static/images/test_images/014-yorogumo.png
-
-static/images/test_images/015-korpokkur.png
-
-static/images/test_images/016-kintaro.png
-
-static/images/test_images/017-yurei.png
-
-static/images/test_images/018-bakezori.png
-
-static/images/test_images/019-azukiarai.png
-
-static/images/test_images/020-chochin obake.png
-
-src/test.py
-
-static/images/IMG01.jpg
-
-static/images/IMG02.jpg
-
-static/images/IMG03.jpg
-
-static/images/IMG04.jpg
-
-static/images/IMG05.jpg
+# Ignore Test images
+*.jpg
