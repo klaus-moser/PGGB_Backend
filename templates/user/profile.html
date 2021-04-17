@@ -2,6 +2,10 @@
 
 {% from "form-helper.html" import displayField %}
 
+{% block head %}
+    <link rel="stylesheet" href="../../static/stylesheet/meme.css">
+{% endblock %}
+
 {% block content %}
 
     <h1> This is your Profile, {{ user.username }}!</h1>
@@ -38,9 +42,14 @@
         </div>
     {% else %}
         {% for meme in memes %}
-            <div>
+            <div class="container">
                 <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
-                    <img src="{{ meme.img_url }}" alt="" width="200" height="200"/></a>
+                    <img src="{{ meme.img_url }}" alt="" class="image" width="300" height="300"/></a>
+                <div class="middle">
+                    <div class="text">Name: {{ meme.meme_name }}</div>
+                    <div class="text">Genre: {{ meme.genre }}</div>
+                    <div class="text">Upload: {{ meme.upload_date }}</div>
+                </div>
             </div>
         {% endfor %}
     {% endif %}
