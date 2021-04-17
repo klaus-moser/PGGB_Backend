@@ -14,7 +14,7 @@ from src.models.meme import MemeModel
 meme = Blueprint('meme', __name__)
 
 
-@meme.route('/meme_page', methods=["GET"])
+@meme.route('/meme_page')
 def meme_page():
     ...
     # TODO:

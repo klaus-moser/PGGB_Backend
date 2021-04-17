@@ -7,6 +7,9 @@
         <meta name="author" content="Klaus Moser">
         <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
+        {%  block head %}
+        {% endblock %}
+
         <!-- Title -->
         {% if title %}
         <title>{{ title }} - PGGB</title>
