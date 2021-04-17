@@ -160,9 +160,6 @@ class UploadMemeForm(FlaskForm):
     genre_label = StringField('genre_label', validators=[
         Length(max=80)])
 
-    info_label = TextAreaField('info_label', validators=[
-        Length(max=255)])
-
     img_url = FileField("img_label", validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png'])])
 
     submit_button = SubmitField('Upload')

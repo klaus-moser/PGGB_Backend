@@ -1,7 +1,7 @@
 from cloudinary.exceptions import Error
 from string import ascii_letters, digits
 from random import choice
-from flask import Blueprint, redirect, url_for, render_template
+from flask import Blueprint, redirect, url_for, render_template, request
 from flask_login import current_user
 from werkzeug.utils import secure_filename
 from uuid import uuid4
@@ -17,8 +17,17 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     ...
-    # TODO:
-    return "Hello world"
+    # TODO: add infos to pictures
+    user = current_user
+
+    # Fetch all user memes + put selected meme in front (middle)
+    selected_meme = request.args.get('selected_meme')
+    memes = [selected_meme]
+    for meme_ in user.memes:
+        if meme_.img_url != selected_meme:
+            memes.append(meme_.img_url)
+
+    return render_template('meme/meme.html', memes=memes)
 
 
 @meme.route('/upload', methods=["POST", "GET"])
@@ -41,8 +50,7 @@ def upload():
         meme_ = MemeModel(current_user.id,
                           file_name,
                           upload_form.meme_name_label.data,
-                          upload_form.genre_label.data,
-                          upload_form.info_label.data)
+                          upload_form.genre_label.data)
 
         try:
             meme_.save_to_cloud(upload_form.img_url.data, current_user.username, int(uuid4()))

@@ -1,8 +1,8 @@
-from datetime import datetime
-from os import environ
 from cloudinary.api import delete_folder
 from cloudinary import uploader
+from datetime import datetime
 from typing import List
+from os import environ
 
 from src.db import db
 
@@ -15,7 +15,6 @@ class MemeModel(db.Model):
     img_url = db.Column(db.String(255))
     public_id = db.Column(db.String(255), nullable=False)
     genre = db.Column(db.Integer)
-    info = db.Column(db.Text(255))
     likes = db.Column(db.Integer)
     upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -31,13 +30,12 @@ class MemeModel(db.Model):
     # fav_by = db.relationship('UserModel', back_populates="children")
     # like_by = db.relationship('UserModel', back_populates="children")
 
-    def __init__(self, owner_id, img_url, meme_name, genre=None, info=None, public_id=None):
+    def __init__(self, owner_id, img_url, meme_name, genre=None, public_id=None):
         self.owner_id = owner_id
         self.img_url = img_url
         self.meme_name = meme_name
         self.public_id = public_id
         self.genre = genre
-        self.info = info
 
     @classmethod
     def find_all_by_id(cls, id_: int) -> List["MemeModel"]:

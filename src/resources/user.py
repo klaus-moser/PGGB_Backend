@@ -89,15 +89,16 @@ def profile(username: str):
     """
     user_ = UserModel.find_by_username(username)
 
-    # TODO: bug: "GET /profile/None HTTP/1.1" 200
-    # TODO: favorites
-
+    # Memes
     meme_models = MemeModel.find_all_by_id(id_=user_.id)
-
-    if meme_models:
-        memes = [meme.img_url for meme in meme_models]
-    else:
+    memes = [meme.img_url for meme in meme_models]
+    if not memes:
         memes = None
+
+    # TODO: bug: "GET /profile/None HTTP/1.1" 200
+
+    # Favorites
+    # TODO: favorites
 
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
