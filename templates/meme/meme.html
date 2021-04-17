@@ -14,6 +14,9 @@
         
             {% for meme in memes %}
                 <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme.img_url }}" data-index="{{ loop.index }}" alt="Image Error">
+                    <div class="middle">
+                        <div class="text">{{ meme.meme_name }}</div>
+                    </div>
             {% endfor %}
         
         </div>
