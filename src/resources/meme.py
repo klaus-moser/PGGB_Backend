@@ -9,6 +9,7 @@ from pathlib import Path
 
 from src.wtform_fields import UploadMemeForm
 from src.models.meme import MemeModel
+from src.models.user import UserModel
 
 
 meme = Blueprint('meme', __name__)
@@ -17,8 +18,11 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     ...
-    # TODO:
-    return render_template('meme/meme.html')
+    # TODO: in progress
+    user = current_user
+    memes = [meme_.img_url for meme_ in user.memes]
+
+    return render_template('meme/meme.html', memes=memes)
 
 
 @meme.route('/upload', methods=["POST", "GET"])

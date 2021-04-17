@@ -11,11 +11,16 @@
     <!-- Cover Flow Page -->
     <div class="gallery">
         <div class="gallery-container">
+            {% for meme in memes %}
+                <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme }}" data-index="{{ loop.index }}">
+            {% endfor %}
+            <!--
             <img class="gallery-item gallery-item-1" src="../static/images/IMG01.jpg" data-index="1">
             <img class="gallery-item gallery-item-2" src="../static/images/IMG02.jpg" data-index="2">
             <img class="gallery-item gallery-item-3" src="../static/images/IMG03.jpg" data-index="3">
             <img class="gallery-item gallery-item-4" src="../static/images/IMG04.jpg" data-index="4">
-             <!-- <img class="gallery-item gallery-item-5" src="../static/images/IMG05.jpg" data-index="5">-->
+            <img class="gallery-item gallery-item-5" src="../static/images/IMG05.jpg" data-index="5">
+            -->
         </div>
         <div class="gallery-controls"></div>
     </div>

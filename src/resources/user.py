@@ -92,6 +92,8 @@ def profile(username: str):
     # Memes
     meme_models = MemeModel.find_all_by_id(id_=user_.id)
     memes = [meme.img_url for meme in meme_models]
+    if not memes:
+        memes = None
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
 
