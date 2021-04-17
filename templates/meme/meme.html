@@ -13,7 +13,7 @@
         <div class="gallery-container">
         
             {% for meme in memes %}
-                <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme }}" data-index="{{ loop.index }}" alt="Image Error">
+                <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme.img_url }}" data-index="{{ loop.index }}" alt="Image Error">
             {% endfor %}
         
         </div>
