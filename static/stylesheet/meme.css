@@ -28,13 +28,14 @@
 }
 
 .container:hover .middle {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .text {
-  background-color: #4CAF50;
+  background-color: rgb(32, 125, 32);
   color: white;
-  font-size: 16px;
+  font-size: 28px;
   padding: 16px 32px;
+  font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
 }
 
