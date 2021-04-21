@@ -1,13 +1,11 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
-from flask_jwt_extended import JWTManager
 
 from src.models.user import UserModel
 from src.resources.main import main
 from src.resources.user import user
 from src.resources.meme import meme
 
-from src.blacklist import BLACKLIST
 from src.config import modes
 from src.db import db
 
@@ -28,9 +26,8 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("src.config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of .db, JWT & loginManager
+    # Initialization of .db & loginManager
     db.init_app(app=app)
-    jwt = JWTManager(app=app)
     login_manager = LoginManager()
     login_manager.init_app(app=app)
 
@@ -43,61 +40,10 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
         """
         return UserModel.find_by_id(id_=user_id)
 
-    @jwt.additional_claims_loader
-    def add_claims_to_jwt(identity: int) -> dict:
-        """
-        Whenever we create a new JWT-token, this function is called to check,
-        if we should add any extra data ("claims") to that JWT as well.
-
-        :param identity: Int of the user-id.
-        :return: {'is_admin': Bool}
-        """
-        if identity == app.config['ADMIN']:
-            return {'is_admin': True}
-        return {'is_admin': False}
-
-    @jwt.token_in_blocklist_loader
-    def check_if_token_in_blacklist(jwt_headers, jwt_payload):
-        """
-        Check it 'jti' is in the BLACKLIST set().
-        If true, request will be reverted to the 'revoked_token_callback'.
-        """
-        return jwt_payload['jti'] in BLACKLIST
-
-    @jwt.expired_token_loader
-    def expired_token_callback(jwt_headers, jwt_payload):
-        return jsonify({
-            'description': 'The token has expired.',
-            'error': 'token_expired'
-        }), 401
-
-    @jwt.invalid_token_loader
-    def invalid_token_callback(error):
-        return jsonify({
-            'description': 'Signature verification failed.',
-            'error': 'token_invalid'
-        }), 401
-
-    @jwt.unauthorized_loader
-    def missing_token_callback(error):
-        return jsonify({
-            'description': 'Request does not contain any access token.',
-            'error': 'authorization_required'
-        }), 401
-
-    @jwt.needs_fresh_token_loader
-    def token_not_fresh_callback(jwt_headers, jwt_payload):
-        return jsonify({
-            'description': 'Token is NOT fresh.',
-            'error': 'fresh_token_required'
-        }), 401
-
-    @jwt.revoked_token_loader
-    def revoked_token_callback(jwt_headers, jwt_payload):
-        return jsonify({
-            'description': 'Token has been revoked.',
-            'error': 'token_revoked'
-        }), 401
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        # TODO: flash("Please sign in to access", 'red')
+        return redirect(url_for("user.login"))
 
     @app.before_first_request
     def create_tables() -> None:
