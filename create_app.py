@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
 
 from src.models.user import UserModel
@@ -39,6 +39,11 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
         :return: User object.
         """
         return UserModel.find_by_id(id_=user_id)
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        # TODO: flash("Please sign in to access", 'red')
+        return redirect(url_for("user.login"))
 
     @app.before_first_request
     def create_tables() -> None:
