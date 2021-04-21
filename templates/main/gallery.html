@@ -1,10 +1,30 @@
 {% extends "base.html" %}
 
-{% from "form-helper.html" import displayField %}
+{% block head %}
+    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
+{% endblock %}
 
 {% block content %}
     <h1> Gallery </h1>
 
     <div>
+    {% if memes_ == None %}
+        <div>
+            <h5> *** No memes uploaded yet *** </h5>
+        </div>
+        <div>
+            <a href=" {{url_for('meme.upload')}} ">Upload a meme</a>
+        </div>
+    {% else %}
+        {% for meme in memes_ %}
+            <div class="container">
+                <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
+
+                    <!-- Import meme here -->
+                    {% include 'meme/meme_card.html' %}
+                </a>
+            </div>
+        {% endfor %}
+    {% endif %}
     </div>
 {% endblock %}
