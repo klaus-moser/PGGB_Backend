@@ -47,7 +47,14 @@ class MemeModel(db.Model):
         """
         return cls.query.filter_by(owner_id=id_).all()
 
-    # TODO: def find_by_id() to find a single meme
+    @classmethod
+    def find_by_id(cls, id_: int):
+        """
+        Find a single meme by its id.
+
+        :param id_: Integer od meme id.
+        """
+        return cls.query.filter_by(id=id_).first()
 
     @classmethod
     def find_all(cls) -> List["MemeModel"]:

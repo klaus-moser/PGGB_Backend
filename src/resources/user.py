@@ -68,16 +68,15 @@ def login():
             access_token = create_access_token(identity=user_.id, fresh=True)
             refresh_token = create_refresh_token(identity=user_.id)
 
-            response = make_response(render_template('main/gallery.html'), 200)
-            set_access_cookies(response, access_token)
-            set_refresh_cookies(response, refresh_token)
-            return response
+            redirect_ = redirect(url_for('main.gallery'))
+            set_access_cookies(redirect_, access_token)
+            set_refresh_cookies(redirect_, refresh_token)
+            return redirect_
 
         # User unknown or wrong password
         return redirect(url_for('user.login'))
-    # Get
-    headers = {'Content-Type': 'text/html'}
-    return make_response(render_template('user/login.html', form=login_form), 200, headers)
+    # GET
+    return make_response(render_template('user/login.html', form=login_form), 200)
 
 
 @user.route('/profile/<username>', methods=["GET"])
@@ -91,7 +90,7 @@ def profile(username: str):
 
     # Memes
     meme_models = MemeModel.find_all_by_id(id_=user_.id)
-    memes = [meme.img_url for meme in meme_models]
+    memes = [meme for meme in meme_models]
     if not memes:
         memes = None
 

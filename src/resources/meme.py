@@ -20,12 +20,16 @@ def meme_page():
     # TODO: add infos to pictures
     user = current_user
 
-    # Fetch all user memes + put selected meme in front (middle)
-    selected_meme = request.args.get('selected_meme')
-    memes = [selected_meme]
+    # Selected meme
+    selected_meme_id = int(request.args.get('selected_meme'))
+
+    # Selected meme in front
+    memes = [MemeModel.find_by_id(selected_meme_id)]
+
+    # Append all other memes
     for meme_ in user.memes:
-        if meme_.img_url != selected_meme:
-            memes.append(meme_.img_url)
+        if meme_.id != selected_meme_id:
+            memes.append(meme_)
 
     return render_template('meme/meme.html', memes=memes)
 
