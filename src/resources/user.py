@@ -81,7 +81,7 @@ def profile(username: str):
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
 
     # Favorites
-    # TODO: favorites
+    # TODO: show favorites in profile
 
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
@@ -102,7 +102,8 @@ def logout():
 
 @user.route('/reset_password', methods=["GET", "POST"])
 @login_required
-def reset_password():  # TODO
+# TODO: implement reset_password()
+def reset_password():
     """
     Reset user password.
     """

@@ -18,7 +18,7 @@ class MemeModel(db.Model):
     likes = db.Column(db.Integer)
     upload_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    # TODO:
+    # TODO: define all foreign_keys in /models/meme
     # users = db.relationship('UserModel', lazy=True, foreign_keys=[id])
     # users = db.relationship('UserModel')
 

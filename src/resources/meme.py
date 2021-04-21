@@ -17,11 +17,12 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     ...
-    # TODO: description
-    if not current_user.is_authenticated:  # TODO: dont redirect
+    # TODO: description missing
+    # TODO: dont redirect -> search fo rbetter solution
+    if not current_user.is_authenticated:
         return redirect(url_for('main.gallery'))
 
-    # TODO: add infos to pictures
+    # TODO: add infos (likes/favs) to pictures
 
     # Selected meme
     selected_meme_id = int(request.args.get('selected_meme'))
