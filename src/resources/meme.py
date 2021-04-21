@@ -2,7 +2,7 @@ from cloudinary.exceptions import Error
 from string import ascii_letters, digits
 from random import choice
 from flask import Blueprint, redirect, url_for, render_template, request
-from flask_login import current_user
+from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 from pathlib import Path
@@ -17,8 +17,11 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     ...
+    # TODO: description
+    if not current_user.is_authenticated:  # TODO: dont redirect
+        return redirect(url_for('main.gallery'))
+
     # TODO: add infos to pictures
-    user = current_user
 
     # Selected meme
     selected_meme_id = int(request.args.get('selected_meme'))
@@ -27,7 +30,7 @@ def meme_page():
     memes = [MemeModel.find_by_id(selected_meme_id)]
 
     # Append all other memes
-    for meme_ in user.memes:
+    for meme_ in current_user.memes:
         if meme_.id != selected_meme_id:
             memes.append(meme_)
 
@@ -35,6 +38,7 @@ def meme_page():
 
 
 @meme.route('/upload', methods=["POST", "GET"])
+@login_required
 def upload():
     """
     Upload a new meme.
