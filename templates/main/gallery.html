@@ -16,11 +16,10 @@
         </div>
     {% else %}
         {% for meme in memes_ %}
-            <a href=" {{url_for('meme.meme_page')}} ">
 
                 <!-- Import meme here -->
                 {% include 'meme/meme_card.html' %}
-            </a>
+
         {% endfor %}
     {% endif %}
     </div>

@@ -4,7 +4,9 @@
 
 <!-- meme_card -->
 <div class="blur">
-    <img src="{{ meme.img_url }}" width="300" alt=""/>
+    <a href=" {{url_for('meme.meme_page')}} " >
+        <img src="{{ meme.img_url }}" width="300" alt=""/>
+    </a>
     <div class="info-text">
         <div class="text">Name: {{ meme.meme_name }}</div>
         <div class="text">Genre: {{ meme.genre }}</div>
