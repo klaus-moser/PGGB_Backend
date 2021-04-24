@@ -1,13 +1,13 @@
 from cloudinary.exceptions import Error
 from string import ascii_letters, digits
 from random import choice
-from flask import Blueprint, redirect, url_for, render_template, request
+from flask import Blueprint, redirect, url_for, render_template, request, make_response
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 from pathlib import Path
 
-from src.wtform_fields import UploadMemeForm
+from src.wtform_fields import UploadMemeForm, DeleteMemeForm
 from src.models.meme import MemeModel
 
 meme = Blueprint('meme', __name__)
@@ -70,13 +70,27 @@ def upload():
 
 @meme.route('/edit_meme/<meme_id>', methods=["POST", "GET"])
 @login_required
-def edit(meme_id):
+def edit_meme(meme_id):
     # TODO: edit meme
     return f'{meme_id}'
 
 
 @meme.route('/delete_meme/<meme_id>', methods=["POST", "GET"])
 @login_required
-def delete(meme_id):
-    # TODO: delete meme
-    return f'{meme_id}'
+def delete_meme(meme_id: int):
+    """
+    Delete a meme from .db and from cloud.
+
+    :param meme_id: Integer of 'meme_id'
+    """
+    delete_form = DeleteMemeForm()
+    meme_ = MemeModel.find_by_id(id_=meme_id)
+
+    if request.method == 'POST':
+
+        if delete_form.delete_button.data:
+            meme_.delete_meme_from_cloud()
+            meme_.delete_from_db()
+        return redirect(url_for('user.profile', username=current_user.username))
+
+    return make_response(render_template('meme/delete_meme.html', meme_id=meme_id, form=delete_form, meme=meme_))

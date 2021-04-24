@@ -163,3 +163,12 @@ class UploadMemeForm(FlaskForm):
     img_url = FileField("img_label", validators=[FileRequired(), FileAllowed(['jpg', 'jpeg', 'png'])])
 
     submit_button = SubmitField('Upload')
+
+
+class DeleteMemeForm(FlaskForm):
+    """
+    This is the form class for the '/delete_meme' endpoint.
+    """
+    delete_button = SubmitField('Delete')
+
+    back_button = SubmitField('Back')

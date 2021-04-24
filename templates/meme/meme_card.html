@@ -13,7 +13,7 @@
         <div class="text">Upload: {{ meme.upload_date }}</div>
     </div>
     {% if meme.owner_id == current_user.id %}
-        <a href="{{url_for('meme.edit', meme_id=meme.id)}}" class="underline">Edit</a>
-        <a href="{{url_for('meme.delete', meme_id=meme.id)}}" class="underline ">Delete</a>
+        <a href="{{url_for('meme.edit_meme', meme_id=meme.id)}}" class="underline">Edit</a>
+        <a href="{{url_for('meme.delete_meme', meme_id=meme.id)}}" class="underline ">Delete</a>
     {% endif %}
 </div>
