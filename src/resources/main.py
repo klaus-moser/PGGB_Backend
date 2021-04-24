@@ -2,7 +2,7 @@ from flask import render_template, make_response, redirect, url_for, Blueprint, 
 from flask_login import current_user
 
 from src.wtform_fields import UserContactForm, AnonymContactForm
-from resources.user import MemeModel  # TODO: why not importable from models.user?
+from resources.user import MemeModel
 
 
 main = Blueprint('main', __name__)
@@ -23,7 +23,7 @@ def gallery():
     """
     Gallery Resource. Render the 'gallery.html' page depending on logged in status.
     """
-    # TODO: view a random gallery
+    # TODO: view a random selection in gallery
     memes_ = MemeModel.find_all()
     if not memes_:
         memes_ = None
@@ -43,7 +43,7 @@ def contact():
         contact_form = AnonymContactForm()
 
     if contact_form.validate_on_submit():
-        # TODO: send_mail
+        # TODO: send_mail: implement mail-server
         return redirect(url_for('main.gallery'))
 
     elif request.method == 'GET':

@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
 {% endblock %}
 
 {% block content %}
@@ -17,13 +16,10 @@
         </div>
     {% else %}
         {% for meme in memes_ %}
-            <div class="container">
-                <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
 
-                    <!-- Import meme here -->
-                    {% include 'meme/meme_card.html' %}
-                </a>
-            </div>
+                <!-- Import meme here -->
+                {% include 'meme/meme_card.html' %}
+
         {% endfor %}
     {% endif %}
     </div>

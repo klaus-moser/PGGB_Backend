@@ -42,6 +42,9 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
 
     @login_manager.unauthorized_handler
     def unauthorized():
+        """
+        Redirect to '/login' if user is not logged in.
+        """
         # TODO: flash("Please sign in to access", 'red')
         return redirect(url_for("user.login"))
 

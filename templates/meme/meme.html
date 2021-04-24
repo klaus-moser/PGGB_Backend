@@ -2,32 +2,13 @@
 
 {% from "form-helper.html" import displayField %}
 
-{% block head %}
-    <link rel="stylesheet" href="../../static/stylesheet/carousel.css">
-{% endblock %}
 
 {% block content %}
 
-    <!-- Cover Flow Page -->
-    <div class="gallery">
-        <div class="gallery-container">
-        
-            {% for meme in memes %}
-                <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme.img_url }}" data-index="{{ loop.index }}" alt="Image Error">
-                    <div class="middle">
-                        <div class="text">Name: {{ meme.meme_name }}</div>
-                        <div class="text">Genre: {{ meme.genre }}</div>
-                        <div class="text">Upload: {{ meme.upload_date }}</div>
-                    </div>
-            {% endfor %}
-        
-        </div>
-        <!-- Hide controls when only one meme is in database -->
-        {% if memes|length > 1 %}
-            <div class="gallery-controls"></div>
-        {%  endif %}
-    </div>
+    <h1>
+    MEME PAGE
+    </h1>
 
-    <script src="../static/scripts/carousel.js"></script>
+    <img src="{{ meme.img_url }}" width=80% alt="Error"/>
 
 {% endblock %}

@@ -1,7 +1,19 @@
+{% block head %}
+    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
+{% endblock %}
+
 <!-- meme_card -->
-<img class="image" src="{{ meme.img_url }}" alt=""/>
-<div class="middle">
-    <div class="text">Name: {{ meme.meme_name }}</div>
-    <div class="text">Genre: {{ meme.genre }}</div>
-    <div class="text">Upload: {{ meme.upload_date }}</div>
+<div class="blur">
+    <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
+        <img class="image" src="{{ meme.img_url }}" width="200" alt=""/>
+    </a>
+    <div class="info-text">
+        <div class="text">Name: {{ meme.meme_name }}</div>
+        <div class="text">Genre: {{ meme.genre }}</div>
+        <div class="text">Upload: {{ meme.upload_date }}</div>
+    </div>
+    {% if meme.owner_id == current_user.id %}
+        <a href="{{url_for('meme.edit', meme_id=meme.id)}}" class="underline">Edit</a>
+        <a href="{{url_for('meme.delete', meme_id=meme.id)}}" class="underline ">Delete</a>
+    {% endif %}
 </div>
