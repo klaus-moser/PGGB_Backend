@@ -27,14 +27,9 @@ def meme_page():
     selected_meme_id = int(request.args.get('selected_meme'))
 
     # Selected meme in front
-    memes = [MemeModel.find_by_id(selected_meme_id)]
+    meme_ = MemeModel.find_by_id(selected_meme_id)
 
-    # Append all other memes
-    for meme_ in current_user.memes:
-        if meme_.id != selected_meme_id:
-            memes.append(meme_)
-
-    return render_template('meme/meme.html', memes=memes)
+    return render_template('meme/meme.html', meme=meme_)
 
 
 @meme.route('/upload', methods=["POST", "GET"])
