@@ -4,6 +4,7 @@
 
 {% block head %}
     <link rel="stylesheet" href="../../static/stylesheet/carousel.css">
+    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
 {% endblock %}
 
 {% block content %}
@@ -13,12 +14,9 @@
         <div class="gallery-container">
         
             {% for meme in memes %}
-                <img class="gallery-item gallery-item-{{ loop.index }}" src="{{ meme.img_url }}" data-index="{{ loop.index }}" alt="Image Error">
-                    <div class="middle">
-                        <div class="text">Name: {{ meme.meme_name }}</div>
-                        <div class="text">Genre: {{ meme.genre }}</div>
-                        <div class="text">Upload: {{ meme.upload_date }}</div>
-                    </div>
+                {% with item=loop.index %}
+                    {% include 'meme/meme_card.html' %}
+                {% endwith %}
             {% endfor %}
         
         </div>

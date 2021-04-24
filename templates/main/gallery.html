@@ -21,7 +21,9 @@
                 <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
 
                     <!-- Import meme here -->
-                    {% include 'meme/meme_card.html' %}
+                    {% with gallery='image' %}
+                        {% include 'meme/meme_card.html' %}
+                    {% endwith %}
                 </a>
             </div>
         {% endfor %}
