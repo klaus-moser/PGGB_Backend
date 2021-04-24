@@ -1,7 +1,13 @@
+{% block head %}
+    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
+{% endblock %}
+
 <!-- meme_card -->
-<img class="{{ gallery }} gallery-item gallery-item-{{ item }}" src="{{ meme.img_url }}" data-index="{{ item }}" alt=""/>
-<div class="middle">
-    <div class="text">Name: {{ meme.meme_name }}</div>
-    <div class="text">Genre: {{ meme.genre }}</div>
-    <div class="text">Upload: {{ meme.upload_date }}</div>
+<div class="blur">
+    <img src="{{ meme.img_url }}" width="300" alt=""/>
+    <div class="info-text">
+        <div class="text">Name: {{ meme.meme_name }}</div>
+        <div class="text">Genre: {{ meme.genre }}</div>
+        <div class="text">Upload: {{ meme.upload_date }}</div>
+    </div>
 </div>

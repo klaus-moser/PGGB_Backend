@@ -2,30 +2,8 @@
 
 {% from "form-helper.html" import displayField %}
 
-{% block head %}
-    <link rel="stylesheet" href="../../static/stylesheet/carousel.css">
-    <link rel="stylesheet" href="../../static/stylesheet/meme_card.css">
-{% endblock %}
 
 {% block content %}
 
-    <!-- Cover Flow Page -->
-    <div class="gallery">
-        <div class="gallery-container">
-        
-            {% for meme in memes %}
-                {% with item=loop.index %}
-                    {% include 'meme/meme_card.html' %}
-                {% endwith %}
-            {% endfor %}
-        
-        </div>
-        <!-- Hide controls when only one meme is in database -->
-        {% if memes|length > 1 %}
-            <div class="gallery-controls"></div>
-        {%  endif %}
-    </div>
-
-    <script src="../static/scripts/carousel.js"></script>
 
 {% endblock %}
