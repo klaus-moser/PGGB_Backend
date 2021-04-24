@@ -4,12 +4,16 @@
 
 <!-- meme_card -->
 <div class="blur">
-    <a href=" {{url_for('meme.meme_page')}} " >
-        <img src="{{ meme.img_url }}" width="300" alt=""/>
+    <a href=" {{url_for('meme.meme_page', selected_meme=meme.id)}} " >
+        <img class="image" src="{{ meme.img_url }}" width="300" alt=""/>
     </a>
     <div class="info-text">
         <div class="text">Name: {{ meme.meme_name }}</div>
         <div class="text">Genre: {{ meme.genre }}</div>
         <div class="text">Upload: {{ meme.upload_date }}</div>
     </div>
+    {% if meme.owner_id == current_user.id %}
+        <a href="{{url_for('meme.edit', meme_id=meme.id)}}" class="underline">Edit</a>
+        <a href="{{url_for('meme.delete', meme_id=meme.id)}}" class="underline ">Delete</a>
+    {% endif %}
 </div>

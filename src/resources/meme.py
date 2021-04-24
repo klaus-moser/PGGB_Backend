@@ -10,7 +10,6 @@ from pathlib import Path
 from src.wtform_fields import UploadMemeForm
 from src.models.meme import MemeModel
 
-
 meme = Blueprint('meme', __name__)
 
 
@@ -72,3 +71,17 @@ def upload():
             return redirect(url_for('user.profile', username=current_user.username))
 
     return render_template('meme/upload.html', form=upload_form)
+
+
+@meme.route('/edit_meme/<meme_id>', methods=["POST", "GET"])
+@login_required
+def edit(meme_id):
+    # TODO: edit meme
+    return f'{meme_id}'
+
+
+@meme.route('/delete_meme/<meme_id>', methods=["POST", "GET"])
+@login_required
+def delete(meme_id):
+    # TODO: delete meme
+    return f'{meme_id}'

@@ -1,8 +1,26 @@
-.blur img{
+.blur img {
 transition: 0.3s ease;
 }
 
-.blur img:hover{
+.blur img:hover {
 -webkit-filter: blur(4px);
 transition: 0.3s ease;
+}
+
+.info-text {
+    opacity: 0;
+    transition: 0.3s ease;
+    color: #ff0000;
+    font-size: 20px;
+}
+
+.image {
+  display: block;
+  width: 50%;
+  height: auto;
+}
+
+.blur:hover .info-text {
+    opacity: 1;
+    transition: 0.3s ease;
 }
