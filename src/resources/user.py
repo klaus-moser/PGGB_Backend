@@ -165,18 +165,18 @@ def edit_profile(user_id):
     edit_form = EditProfileForm()
 
     if edit_form.validate_on_submit():
-        user_.username = edit_form.username_field.data
-        user_.email = edit_form.email_field.data
+        user_.username = edit_form.username.data
+        user_.email = edit_form.email.data
         user_.save_to_db()
 
         return redirect(url_for('user.profile', username=user_.username))
 
-    elif request.method == "GET":
-        edit_form.username_field.data = user_.username
-        edit_form.email_field.data = user_.email
+    else:
+        edit_form.username.data = user_.username
+        edit_form.email.data = user_.email
 
-        return render_template('user/edit_profile.html', title='Edit Profile',
-                               user=user_, form=edit_form)
+    return render_template('user/edit_profile.html', title='Edit Profile',
+                           user=user_, form=edit_form)
 
 
 @user.route('/select_avatar/', methods=["GET"])
