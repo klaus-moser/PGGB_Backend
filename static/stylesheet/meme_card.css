@@ -1,26 +1,37 @@
-.blur img {
-transition: 0.3s ease;
-}
-
-.blur img:hover {
--webkit-filter: blur(4px);
-transition: 0.3s ease;
-}
-
-.info-text {
-    opacity: 0;
-    transition: 0.3s ease;
-    color: #ff0000;
-    font-size: 20px;
+.meme-container {
+    position: relative;
+    width: 50%;
 }
 
 .image {
-  display: block;
-  width: 50%;
-  height: auto;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-.blur:hover .info-text {
-    opacity: 1;
-    transition: 0.3s ease;
+.text-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    background-color: #008CBA;
+}
+
+.text {
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.meme-container:hover .text-container {
+    opacity: 0.8;
 }
