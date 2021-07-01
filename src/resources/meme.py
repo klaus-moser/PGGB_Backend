@@ -15,8 +15,11 @@ meme = Blueprint('meme', __name__)
 
 @meme.route('/meme_page')
 def meme_page():
-    ...
+    """
     # TODO: description missing
+    :return:
+    """
+
     # TODO: dont redirect -> search fo rbetter solution
     if not current_user.is_authenticated:
         return redirect(url_for('main.gallery'))

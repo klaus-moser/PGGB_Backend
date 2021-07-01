@@ -23,7 +23,7 @@ def gallery():
     """
     Gallery Resource. Render the 'gallery.html' page depending on logged in status.
     """
-    # TODO: view a random selection in gallery
+
     memes_ = MemeModel.find_all()
     if not memes_:
         memes_ = None

@@ -9,7 +9,11 @@
     MEME PAGE
     </h1>
 
-    <!-- <img src="{{ meme.img_url }}" width=80% alt="Error"/> -->
     {% include 'meme/meme_card.html' %}
+
+    {% if meme.owner_id == current_user.id %}
+        <a href="{{url_for('meme.edit_meme', meme_id=meme.id)}}" class="underline">Edit</a>
+        <a href="{{url_for('meme.delete_meme', meme_id=meme.id)}}" class="underline ">Delete</a>
+    {% endif %}
 
 {% endblock %}

@@ -9,15 +9,10 @@
 
     <div class="text-container">
         <div class="text">
-            Name: {{ meme.meme_name }}
-            Genre: {{ meme.genre }}
-            Upload: {{ meme.upload_date }}
+            <p>Name: {{ meme.meme_name }}</p>
+            <p>Genre: {{ meme.genre }}</p>
+            <p>Upload: {{ meme.upload_date }}</p>
         </div>
     </div>
     </a>
 </div>
-
-{% if meme.owner_id == current_user.id %}
-    <a href="{{url_for('meme.edit_meme', meme_id=meme.id)}}" class="underline">Edit</a>
-    <a href="{{url_for('meme.delete_meme', meme_id=meme.id)}}" class="underline ">Delete</a>
-{% endif %}
