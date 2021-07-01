@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2> Are you sure to delte this meme?</h2>
+    <div>
+        <img src="{{ meme.img_url }}" width=20% alt="Error"/>
+    </div>
+
+    <form action="{{ url_for('meme.delete_meme', meme_id=meme_id) }}" method="POST">
+
+        <div>
+            <h4> This cannot be undone!</h4>
+            {{ form.delete_button }}
+        </div>
+        <div>
+            {{ form.back_button }}
+        </div>
+    </form>
+
+{% endblock %}

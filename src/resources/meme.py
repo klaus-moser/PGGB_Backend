@@ -1,13 +1,13 @@
-from cloudinary.exceptions import Error
-from string import ascii_letters, digits
-from random import choice
-from flask import Blueprint, redirect, url_for, render_template, request
+from flask import Blueprint, redirect, url_for, render_template, request, make_response
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
-from uuid import uuid4
+from string import ascii_letters, digits
+from cloudinary.exceptions import Error
+from random import choice
 from pathlib import Path
+from uuid import uuid4
 
-from src.wtform_fields import UploadMemeForm
+from src.wtform_fields import UploadMemeForm, DeleteMemeForm
 from src.models.meme import MemeModel
 
 meme = Blueprint('meme', __name__)
@@ -15,13 +15,11 @@ meme = Blueprint('meme', __name__)
 
 @meme.route('/meme_page')
 def meme_page():
-    ...
-    # TODO: description missing
-    # TODO: dont redirect -> search fo rbetter solution
-    if not current_user.is_authenticated:
-        return redirect(url_for('main.gallery'))
+    """
+    This is the main page of the selected meme.
 
-    # TODO: add infos (likes/favs) to pictures
+    :return: renders the 'meme/meme.html' template including the selected meme.
+    """
 
     # Selected meme
     selected_meme_id = int(request.args.get('selected_meme'))
@@ -38,6 +36,7 @@ def upload():
     """
     Upload a new meme.
     """
+
     upload_form = UploadMemeForm()
 
     if upload_form.validate_on_submit():
@@ -70,13 +69,28 @@ def upload():
 
 @meme.route('/edit_meme/<meme_id>', methods=["POST", "GET"])
 @login_required
-def edit(meme_id):
+def edit_meme(meme_id):
     # TODO: edit meme
     return f'{meme_id}'
 
 
 @meme.route('/delete_meme/<meme_id>', methods=["POST", "GET"])
 @login_required
-def delete(meme_id):
-    # TODO: delete meme
-    return f'{meme_id}'
+def delete_meme(meme_id: int):
+    """
+    Delete a meme from .db and from cloud.
+
+    :param meme_id: Integer of 'meme_id'
+    """
+
+    delete_form = DeleteMemeForm()
+    meme_ = MemeModel.find_by_id(id_=meme_id)
+
+    if request.method == 'POST':
+
+        if delete_form.delete_button.data:
+            meme_.delete_meme_from_cloud()
+            meme_.delete_from_db()
+        return redirect(url_for('user.profile', username=current_user.username))
+
+    return make_response(render_template('meme/delete_meme.html', meme_id=meme_id, form=delete_form, meme=meme_))

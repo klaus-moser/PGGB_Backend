@@ -6,7 +6,7 @@
 {% block content %}
     <h1> Gallery </h1>
 
-    <div>
+
     {% if memes_ == None %}
         <div>
             <h5> *** No memes uploaded yet *** </h5>
@@ -17,10 +17,10 @@
     {% else %}
         {% for meme in memes_ %}
 
-                <!-- Import meme here -->
-                {% include 'meme/meme_card.html' %}
+            <!-- Import meme here -->
+            {% include 'meme/meme_card.html' %}
 
         {% endfor %}
     {% endif %}
-    </div>
+
 {% endblock %}
