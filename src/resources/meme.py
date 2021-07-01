@@ -1,11 +1,11 @@
-from cloudinary.exceptions import Error
-from string import ascii_letters, digits
-from random import choice
 from flask import Blueprint, redirect, url_for, render_template, request, make_response
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
-from uuid import uuid4
+from string import ascii_letters, digits
+from cloudinary.exceptions import Error
+from random import choice
 from pathlib import Path
+from uuid import uuid4
 
 from src.wtform_fields import UploadMemeForm, DeleteMemeForm
 from src.models.meme import MemeModel
@@ -16,15 +16,10 @@ meme = Blueprint('meme', __name__)
 @meme.route('/meme_page')
 def meme_page():
     """
-    # TODO: description missing
-    :return:
+    This is the main page of the selected meme.
+
+    :return: renders the 'meme/meme.html' template including the selected meme.
     """
-
-    # TODO: dont redirect -> search fo rbetter solution
-    if not current_user.is_authenticated:
-        return redirect(url_for('main.gallery'))
-
-    # TODO: add infos (likes/favs) to pictures
 
     # Selected meme
     selected_meme_id = int(request.args.get('selected_meme'))
@@ -41,6 +36,7 @@ def upload():
     """
     Upload a new meme.
     """
+
     upload_form = UploadMemeForm()
 
     if upload_form.validate_on_submit():
@@ -86,6 +82,7 @@ def delete_meme(meme_id: int):
 
     :param meme_id: Integer of 'meme_id'
     """
+
     delete_form = DeleteMemeForm()
     meme_ = MemeModel.find_by_id(id_=meme_id)
 

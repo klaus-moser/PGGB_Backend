@@ -1,8 +1,8 @@
 from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import login_user, logout_user, current_user, login_required
 from passlib.hash import pbkdf2_sha256
-from os import environ
 from random import randint
+from os import environ
 
 from src.models.user import UserModel
 from src.models.meme import MemeModel
@@ -19,6 +19,7 @@ def register():
     """
     Register a new user.
     """
+
     register_form = RegisterForm()
 
     if request.method == 'POST' and register_form.validate_on_submit():
@@ -46,6 +47,7 @@ def login():
     """
     Login a new user.
     """
+
     login_form = LoginForm()
 
     if request.method == 'POST' and login_form.validate_on_submit():
@@ -70,6 +72,7 @@ def profile(username: str):
 
     :param username: String with current user.
     """
+
     user_ = UserModel.find_by_username(username)
 
     # Memes
@@ -79,9 +82,7 @@ def profile(username: str):
         memes = None
 
     # TODO: bug: "GET /profile/None HTTP/1.1" 200
-
-    # Favorites
-    # TODO: show favorites in profile
+    # https://github.com/klaus-moser/PGGB_Backend/issues/14
 
     return make_response(render_template('user/profile.html',
                                          title=f"{user_.username}",
@@ -96,6 +97,7 @@ def logout():
     """
     Logout user.
     """
+
     logout_user()
     return redirect(url_for('main.index'))
 
@@ -117,6 +119,7 @@ def delete_account(user_id):
     Delete a user from the db.
     This also deletes all user memes on the cloud!
     """
+
     user_ = UserModel.find_by_id(id_=user_id)
 
     if user_ != current_user and current_user != 'admin':
@@ -158,6 +161,7 @@ def edit_profile(user_id):
     """
     Edit a user.
     """
+    
     user_ = UserModel.find_by_id(user_id)
     if user_ != current_user and current_user.username != 'admin':
         return redirect(url_for('main.gallery'))
@@ -185,6 +189,7 @@ def select_avatar():
     """
     Edit the user's avatar.
     """
+
     if request.args.get('selected_avatar'):
         user_ = UserModel.find_by_username(current_user.username)
 

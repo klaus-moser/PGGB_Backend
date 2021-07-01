@@ -11,8 +11,10 @@ main = Blueprint('main', __name__)
 @main.route('/', methods=["GET"])
 def index():
     """
-    Index Resource. Render the 'index.html' landing page.
+    Index Resource.
+    Render the 'index.html' landing page.
     """
+
     if current_user.is_authenticated:
         return redirect(url_for('main.gallery'))
     return make_response(render_template('main/index.html', title="Index"), 200)
@@ -21,22 +23,23 @@ def index():
 @main.route('/gallery', methods=["GET"])
 def gallery():
     """
-    Gallery Resource. Render the 'gallery.html' page depending on logged in status.
+    Gallery Resource.
+    Render the 'gallery.html' page depending on logged in status.
     """
 
     memes_ = MemeModel.find_all()
     if not memes_:
         memes_ = None
-
     return make_response(render_template('main/gallery.html', title="Gallery", memes_=memes_), 200)
 
 
 @main.route('/contact', methods=["GET", "POST"])
 def contact():
     """
-    Contact Resource. Depending on method=["POST", "GET"]
-    send mail or just render the 'contact.html'.
+    Contact Resource.
+    Depending on method=["POST", "GET"] send mail or just render the 'contact.html'.
     """
+
     if current_user.is_authenticated:
         contact_form = UserContactForm()
     else:

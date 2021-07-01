@@ -1,8 +1,8 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileRequired, FileAllowed
-from passlib.handlers.pbkdf2 import pbkdf2_sha256
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, FileField
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
+from flask_wtf.file import FileRequired, FileAllowed
+from passlib.handlers.pbkdf2 import pbkdf2_sha256
+from flask_wtf import FlaskForm
 
 from src.models.user import UserModel
 from src.utils import Utils
