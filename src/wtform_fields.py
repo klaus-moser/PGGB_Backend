@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, SubmitField, TextAreaField, File
 from wtforms.validators import InputRequired, Length, EqualTo, ValidationError
 
 from src.models.user import UserModel
+from src.utils import Utils
 
 
 class AnonymContactForm(FlaskForm):
@@ -73,6 +74,9 @@ class RegisterForm(FlaskForm):
 
         :param email: Email to be validated via the database.
         """
+        if not Utils.validate_email_format(email=email.data):
+            raise ValidationError("No valid Email format!")
+
         if UserModel.find_by_email(email=email.data):
             raise ValidationError("A email '{}' already exists!".format(email.data))
 
@@ -120,10 +124,10 @@ class EditProfileForm(FlaskForm):
     """
     This is the form class for the '/edit_profile' endpoint.
     """
-    username_field = StringField('username_field', validators=[
+    username = StringField('username_field', validators=[
         InputRequired(message='Username')])
 
-    email_field = StringField('email_field', validators=[
+    email = StringField('email_field', validators=[
         InputRequired(message='Email')])
 
     submit_button = SubmitField('Submit')
@@ -145,6 +149,9 @@ class EditProfileForm(FlaskForm):
 
         :param email: Email to be validated via the database.
         """
+        if not Utils.validate_email_format(email=email.data):
+            raise ValidationError("No valid Email format!")
+
         if UserModel.find_by_email(email=email.data):
             raise ValidationError("A email '{}' already exists!".format(email.data))
 
