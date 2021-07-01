@@ -1,3 +1,4 @@
+import cloudinary.exceptions
 from cloudinary.api import delete_folder
 from cloudinary import uploader
 from datetime import datetime
@@ -30,6 +31,8 @@ class MemeModel(db.Model):
     # fav_by = db.relationship('UserModel', back_populates="children")
     # like_by = db.relationship('UserModel', back_populates="children")
 
+    cloud_folder_path = 'user_uploads'
+
     def __init__(self, owner_id, img_url, meme_name, genre=None, public_id=None):
         self.owner_id = owner_id
         self.img_url = img_url
@@ -45,6 +48,7 @@ class MemeModel(db.Model):
         :param id_: Owner id_ to find.
         :return: Objects of Meme-class with owner id_.
         """
+
         return cls.query.filter_by(owner_id=id_).all()
 
     @classmethod
@@ -54,6 +58,7 @@ class MemeModel(db.Model):
 
         :param id_: Integer od meme id.
         """
+
         return cls.query.filter_by(id=id_).first()
 
     @classmethod
@@ -61,12 +66,14 @@ class MemeModel(db.Model):
         """
         Returns all memes in .db
         """
+
         return cls.query.all()
 
     def save_to_db(self) -> None:
         """
         Save meme to data base.
         """
+
         db.session.add(self)
         db.session.commit()
 
@@ -74,19 +81,22 @@ class MemeModel(db.Model):
         """
         Delete meme from database.
         """
+
         db.session.delete(self)
         db.session.commit()
 
-    def save_to_cloud(self, image: str, username: str, pk: int) -> None:
+    def save_to_cloud(self, image: str, username: str, pk: int, path: str = cloud_folder_path) -> None:
         """
         Upload a new meme to the cloudinary cloud.
 
         :param image: Given image path
         :param username: String of username
         :param pk: UUID for avoiding overwriting
+        :param path: Path of all user folders on cloudinary
         """
+
         # Create folder for every user to store memes
-        self.public_id = f'user_uploads/{username}/{pk}'
+        self.public_id = f'{path}/{username}/{pk}'
 
         res = uploader.upload(image, public_id=self.public_id, overwrite=True)
 
@@ -101,12 +111,21 @@ class MemeModel(db.Model):
         """
         Delete meme from cloud.
         """
-        uploader.destroy(public_id=self.public_id)
+
+        try:
+            uploader.destroy(public_id=self.public_id)
+
+        except cloudinary.exceptions.Error:
+            pass
 
     @staticmethod
-    def delete_folder_from_cloud(username: str) -> None:
+    def delete_folder_from_cloud(username: str, path: str = cloud_folder_path) -> None:
         """
-        Delete folder of user from cloud.
-        Folder MUST be emptied before!
+        Delete empty folder of user from cloud.
         """
-        delete_folder(path=f'user_uploads/{username}')
+
+        try:
+            delete_folder(path=f'{path}/{username}')
+
+        except cloudinary.exceptions.NotFound:
+            pass
