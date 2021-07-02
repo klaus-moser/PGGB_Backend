@@ -6,15 +6,8 @@
 {% block content %}
     <h1> Gallery </h1>
 
-
-    {% if memes_ == None %}
-        <div>
-            <h5> *** No memes uploaded yet *** </h5>
-        </div>
-        <div>
-            <a href=" {{url_for('meme.upload')}} ">Upload a meme</a>
-        </div>
-    {% else %}
+    {% if memes_ %}
+        
         {% for meme in memes_ %}
 
             <!-- Import meme here -->
@@ -22,5 +15,9 @@
 
         {% endfor %}
     {% endif %}
+
+    <div>
+        <a href=" {{url_for('meme.upload')}} ">Upload a meme</a>
+    </div>
 
 {% endblock %}
