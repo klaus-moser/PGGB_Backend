@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
+from flask_mail import Mail
 
 from src.models.user import UserModel
 from src.resources.main import main
@@ -9,6 +10,7 @@ from src.resources.meme import meme
 from src.config import modes
 from src.db import db
 
+mail = Mail()
 
 def create_app(mode: str = 'DEPLOY') -> Flask:
     """
@@ -26,10 +28,12 @@ def create_app(mode: str = 'DEPLOY') -> Flask:
     app.config.from_object("src.config." + modes[mode])
     app.app_context().push()
 
-    # Initialization of .db & loginManager
+    # Initialization of .db, loginManager & Flask-Mail
     db.init_app(app=app)
     login_manager = LoginManager()
     login_manager.init_app(app=app)
+    # mail = Mail()
+    mail.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id: str) -> object:

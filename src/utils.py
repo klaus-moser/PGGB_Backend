@@ -1,4 +1,7 @@
 from re import fullmatch
+from flask import current_app
+from flask_mail import Message
+from create_app import mail
 
 
 class Utils:
@@ -19,3 +22,18 @@ class Utils:
         if not fullmatch(regex, email):
             return False
         return True
+
+    # TODO: https://github.com/miguelgrinberg/flasky/blob/master/app/email.py
+
+
+class FlaskMail:
+
+    @staticmethod
+    def send_email(subject, sender, recipients, text_body, html_body):
+        msg = Message(subject, sender=sender, recipients=recipients)
+        msg.body = text_body
+        msg.html = html_body
+
+        mail.send(msg)
+
+    # TODO:

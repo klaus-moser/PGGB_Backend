@@ -46,7 +46,14 @@ def contact():
         contact_form = AnonymContactForm()
 
     if contact_form.validate_on_submit():
+
         # TODO: send_mail: implement mail-server
+
+
+
+
+
+
         return redirect(url_for('main.gallery'))
 
     elif request.method == 'GET':
