@@ -6,6 +6,7 @@ from typing import List
 from os import environ
 
 from src.db import db
+from config import Config
 
 
 class MemeModel(db.Model):
@@ -30,8 +31,6 @@ class MemeModel(db.Model):
     owner = db.relationship('UserModel', back_populates="memes")
     # fav_by = db.relationship('UserModel', back_populates="children")
     # like_by = db.relationship('UserModel', back_populates="children")
-
-    cloud_folder_path = 'user_uploads'
 
     def __init__(self, owner_id, img_url, meme_name, genre=None, public_id=None):
         self.owner_id = owner_id
@@ -85,7 +84,7 @@ class MemeModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def save_to_cloud(self, image: str, username: str, pk: int, path: str = cloud_folder_path) -> None:
+    def save_to_cloud(self, image: str, username: str, pk: int, path: str = Config.CLOUDINARY_ROOT_FOLDER) -> None:
         """
         Upload a new meme to the cloudinary cloud.
 
@@ -119,7 +118,7 @@ class MemeModel(db.Model):
             pass
 
     @staticmethod
-    def delete_folder_from_cloud(username: str, path: str = cloud_folder_path) -> None:
+    def delete_folder_from_cloud(username: str, path: str = Config.CLOUDINARY_ROOT_FOLDER) -> None:
         """
         Delete empty folder of user from cloud.
         """
