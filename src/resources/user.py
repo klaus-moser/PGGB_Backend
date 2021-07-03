@@ -1,11 +1,8 @@
-import cloudinary.exceptions
 from flask import render_template, make_response, redirect, url_for, Blueprint, request
 from flask_login import login_user, logout_user, current_user, login_required
 from passlib.hash import pbkdf2_sha256
 from random import randint
 from os import environ
-from uuid import uuid4
-from copy import deepcopy
 
 from src.models.user import UserModel
 from src.models.meme import MemeModel
@@ -173,38 +170,6 @@ def edit_profile(user_id):
 
     if edit_form.is_submitted():
 
-        # Check if username is different
-        if edit_form.username.data != user_.username and not edit_form.validate_username(username=edit_form.username):
-
-            # Migrate files on cloudinary to new folder with new public_id
-            memes_ = MemeModel.find_all_by_id(id_=user_id)
-            memes_save = deepcopy(memes_)
-
-            try:
-                for meme_ in memes_:
-                    # Save to new folder in cloud
-                    meme_.save_to_cloud(meme_.img_url, edit_form.username.data, int(uuid4()))
-                    # Update .db
-                    meme_.save_to_db()
-
-            except cloudinary.exceptions.Error as err:
-                print(err)
-
-            try:
-                # Delete all memes from old folder
-                for meme in memes_save:
-                    meme.delete_meme_from_cloud()
-
-                # Delete empty folder
-                MemeModel.delete_folder_from_cloud(username=user_.username)
-
-                # change
-                user_.username = edit_form.username.data
-                user_.save_to_db()
-
-            except cloudinary.exceptions.Error as err:
-                print(err)
-
         # Check if email is different
         if edit_form.email.data != user_.email and not edit_form.validate_email(email=edit_form.email):
             # Change
@@ -215,7 +180,6 @@ def edit_profile(user_id):
 
     else:
         # Fill out boxes with user data
-        edit_form.username.data = user_.username
         edit_form.email.data = user_.email
 
     return render_template('user/edit_profile.html', title='Edit Profile',
