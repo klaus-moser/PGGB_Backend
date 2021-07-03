@@ -1,5 +1,5 @@
 from os import environ
-import cloudinary
+from cloudinary import config
 
 
 modes: dict = {'PRODUCTION': 'ProductionConfig',
@@ -34,11 +34,12 @@ class Config(object):
     PROPAGATE_EXCEPTIONS = True
 
     # Cloudinary API Settings
-    cloudinary.config(
+    config(
         cloud_name=environ.get("CLOUD_NAME"),
         api_key=environ.get("CLOUD_API_KEY"),
-        api_secret=environ.get("CLOUD_API_SECRET")
+        api_secret=environ.get("CLOUD_API_SECRET"),
     )
+    CLOUDINARY_ROOT_FOLDER = "user_uploads"
 
 
 class ProductionConfig(Config):

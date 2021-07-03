@@ -168,15 +168,18 @@ def edit_profile(user_id):
 
     edit_form = EditProfileForm()
 
-    if edit_form.validate_on_submit():
-        user_.username = edit_form.username.data
-        user_.email = edit_form.email.data
-        user_.save_to_db()
+    if edit_form.is_submitted():
+
+        # Check if email is different
+        if edit_form.email.data != user_.email and not edit_form.validate_email(email=edit_form.email):
+            # Change
+            user_.email = edit_form.email.data
+            user_.save_to_db()
 
         return redirect(url_for('user.profile', username=user_.username))
 
     else:
-        edit_form.username.data = user_.username
+        # Fill out boxes with user data
         edit_form.email.data = user_.email
 
     return render_template('user/edit_profile.html', title='Edit Profile',

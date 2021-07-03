@@ -124,23 +124,11 @@ class EditProfileForm(FlaskForm):
     """
     This is the form class for the '/edit_profile' endpoint.
     """
-    username = StringField('username_field', validators=[
-        InputRequired(message='Username')])
 
     email = StringField('email_field', validators=[
         InputRequired(message='Email')])
 
     submit_button = SubmitField('Submit')
-
-    # Custom validator to check username upfront
-    def validate_username(self, username):
-        """
-        Validate a given username.
-
-        :param username: Username to be validated via the database.
-        """
-        if UserModel.find_by_username(username=username.data):
-            raise ValidationError("A user '{}' already exists!".format(username.data))
 
     # Custom validator to check email upfront
     def validate_email(self, email):
