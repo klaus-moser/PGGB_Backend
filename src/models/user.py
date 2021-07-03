@@ -1,10 +1,7 @@
 from datetime import datetime
 from flask_login import UserMixin
-import cloudinary.exceptions
-from cloudinary import uploader
 
 from src.db import db
-from config import Config
 
 
 class UserModel(db.Model, UserMixin):

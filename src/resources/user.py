@@ -177,19 +177,23 @@ def edit_profile(user_id):
         if edit_form.username.data != user_.username and not edit_form.validate_username(username=edit_form.username):
 
             # Migrate files on cloudinary to new folder with new public_id
-            try:
-                memes_ = MemeModel.find_all_by_id(id_=user_id)
+            memes_ = MemeModel.find_all_by_id(id_=user_id)
+            memes_save = deepcopy(memes_)
 
+            try:
                 for meme_ in memes_:
-                    # Save old meme infos
-                    meme_old_ = None
-                    meme_old_ = deepcopy(meme_)
                     # Save to new folder in cloud
                     meme_.save_to_cloud(meme_.img_url, edit_form.username.data, int(uuid4()))
                     # Update .db
                     meme_.save_to_db()
-                    # Delete old file in old folder
-                    meme_old_.delete_meme_from_cloud()
+
+            except cloudinary.exceptions.Error as err:
+                print(err)
+
+            try:
+                # Delete all memes from old folder
+                for meme in memes_save:
+                    meme.delete_meme_from_cloud()
 
                 # Delete empty folder
                 MemeModel.delete_folder_from_cloud(username=user_.username)
